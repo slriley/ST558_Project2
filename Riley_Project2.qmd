@@ -1,0 +1,125 @@
+---
+title: "Riley_Project2"
+format: html
+---
+
+## Project Description
+This project will create a Shiny app to explore a selected dataset.\
+
+## Author Information
+Author: Shannon Riley\
+Organization: NCSU ST 558\
+Date: Fall 2026 (Completed 10/__/2026)\
+
+## Data Description
+I have selected data from the Southeast Area Monitoring and Assessment Program's (SEAMAP) plankton surveys as my data for this project. This is a of plankton sampling cruises for several years, separated by the type of net used. I will only be using data from cruises that used a multiple opening-closing net and environmental sensing system (MOCNESS). I used a portion of this data for my master's thesis, so I am excited to explore the data I wasn't able to use before.
+
+## Data Exploration
+
+```{r}
+#| echo: false
+#| output: false
+# Load required packages
+library(dplyr)     # to perform basic EDA
+library(readxl)    # to read in Excel files
+library(tidyr)     # to produce and up tibbles
+```
+
+Read in the data for only the MOCNESS samples (2nd sheet of the excel file:
+```{r}
+cephs <- read_excel('data/SEAMAP_Cephalopod.xls', sheet = 'MOCNESS')
+```
+
+Produce a general summary of the data:
+```{r}
+str(cephs)
+```
+* Variable descriptions:
++ VESSEL= Vessel number (I can give you a list if you want)
++ CRUISE_NO = Cruise number
++ P_STA_NO = Sequential station number for that cruise
++ SEAMAP = Designated standard grid number
++ SAMPLE_NO = Unique sample number
++ CEPH_COUNT = number of cephalopods counted/pulled
++ GEAR_ICD = Gear designation (01=bongo, 03=nesuton, 09=MOCNESS, etc.)
++ GEAR_LOC = sample location (mainly for bongos, R or L)
++ MESH_ICD = Mesh size (03=0.333mm)
++ NET_NO = Net number -  Mainly for the MOCNESS tows
++ S_LAT= Latitude in decimal degrees
++ S_LON = Longitude in decimal degrees
++ GEAR_IN = Time the gear went into the water (started fishing) in GMT
++ GEAR_OUT = Time the gear came out of the water (stopped fishing) in GMT
++ TOWTIME = Time gear was towed (decimal minutes)
++ MONTH = Month
++ YEAR = Year
++ SEASON = Survey season
++ VESSEL_SPD = vessel speed (knots)
++ VOL_FILT = volume filtered by the nets (cubic meters)
++ DEPTH_IBEG = depth of the beginning of the tow (meters)
++ DEPTH_IEND = depth at the end of the tow (meters)
++ DEPTH_IMAX = maximum depth of the tow (meters)
++ VOL_DISP = volume displacement of the sample prior to processing (milliliters)
++ DEPTH_SSTA = station depth (fathoms)
++ TEMP_SSURF = surface water temp in Celsius
++ TEMP_BOT = bottom water temp in Celsius
++ TEMP_SAIR = air temp in Celsius
++ B_PRSSR = barometric pressure (millibars)
++ ITS_CODE = survey code
++ V_C_P = concatenation of vessel, cruise, and station number
++ V_C_P_S = concatenation of vessel, cruise, station number. and sample number
+
+Check for missing data:
+```{r}
+cephs |> summarize(across(everything(), ~ sum(is.na(.))))
+# More convenient to view
+colSums(is.na(cephs))
+```
+
+Before starting any additional EDA, I'm going to remove the variables with the most NAs:
+```{r}
+cephs <- cephs |> select(!c(NET_NO, VESSEL_SPD, VOL_DISP, TEMP_BOT))
+```
+
+Now I'll look at a summary of the remaining variables:
+```{r}
+summary(cephs)
+```
+The variables *GEAR_ICD* and *MESH_ICD* only have one unique value each - this is because they are associated with the type of net being used; so I will remove them from the dataset
+```{r}
+cephs <- cephs |> select(!c(GEAR_ICD, MESH_ICD))
+```
+
+Based on the `str()` call above, it looks like all of the variables are the correct type. However, some could be changed to factors. I'll do that for the following variables: VESSEL, CRUISE_NO, GEAR_LOC, and SEASON. Additionally, I think month and year could be treated as numeric or categorical, so I'll make a factor version of those variables, but retain the numeric version as well.
+```{r}
+cephs <- cephs |> mutate(VESSEL = as.factor(VESSEL),
+                         CRUISE_NO = factor(CRUISE_NO, 
+                                            levels = c("072", "091", "094", "104", "111", "113", "298", "121", "123", "303", "135", "166")),
+                         GEAR_LOC = as.factor(GEAR_LOC),
+                         SEASON = factor(SEASON, 
+                                         levels = c('WINTER', 'SPRING', 'EARLY FALL')),
+                         fYEAR = factor(YEAR),
+                         fMONTH = factor(MONTH)
+                         )
+# Check if it looks right
+cephs
+```
+
+This is still a lot of variables, but not all of them would be expected to have an effect on the others. For example, which vessel was used to conduct the survey should not have an effect on any of the other variables. Other variables provide much of the same information, such as *V_C_P*, *V_C_P_S*, and *SEAMAP*.
+
+
+
+Produce numerical and graphical summaries to investigate the data. These should include:
+– One-way and Two-way contingency tables
+– Numerical summaries (means, medians, sds, etc.) for quantitative variables at levels of categorical
+variables
+– Create at least six distinct plots (bar chart, side-by-side bar chart, histogram, box plot, scatter
+plot, faceted version of one of those, etc.).
+∗ At least four of these should display multivariate information via the type of graph, by utilizing
+coloring, grouping, etc.
+1
+∗ All plots should have nice labels and titles.
+∗ Some kind of faceting should be used somewhere.
+∗ At least one plot should be a plot that we didn’t cover in class (say a heatmap or something
+like that - depends on your data - lots of good examples to consider here)
+
+
