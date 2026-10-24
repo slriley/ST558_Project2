@@ -24,6 +24,7 @@ library(dplyr)     # to perform basic EDA
 library(ggplot2)   # to create plots
 library(ggtext)    # to improve plot formatting
 library(leaflet)   # to make a map plot
+library(readr)     # to save the cleaned data as a CSV file
 library(readxl)    # to read in Excel files
 library(tidyr)     # to produce and up tibbles
 ```
@@ -109,6 +110,12 @@ cephs
 ```
 
 This is still a lot of variables, but not all of them would be expected to have an effect on the others. For example, which vessel was used to conduct the survey should not have an effect on any of the other variables. Other variables provide much of the same information, such as *V_C_P*, *V_C_P_S*, and *SEAMAP*. I will likely choose a subset of the variables for the user to explore in the Shiny app.
+
+Save this version of the data set for use in the Shiny app:
+```{r}
+write_csv(cephs, 'data/cephs.csv')
+```
+
 
 Make a list of numeric variables:
 ```{r}
