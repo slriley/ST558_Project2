@@ -21,6 +21,9 @@ I have selected data from the Southeast Area Monitoring and Assessment Program's
 #| output: false
 # Load required packages
 library(dplyr)     # to perform basic EDA
+library(ggplot2)   # to create plots
+library(ggtext)    # to improve plot formatting
+library(leaflet)   # to make a map plot
 library(readxl)    # to read in Excel files
 library(tidyr)     # to produce and up tibbles
 ```
@@ -96,7 +99,8 @@ cephs <- cephs |> mutate(VESSEL = as.factor(VESSEL),
                                             levels = c("072", "091", "094", "104", "111", "113", "298", "121", "123", "303", "135", "166")),
                          GEAR_LOC = as.factor(GEAR_LOC),
                          SEASON = factor(SEASON, 
-                                         levels = c('WINTER', 'SPRING', 'EARLY FALL')),
+                                         levels = c('WINTER', 'SPRING', 'EARLY FALL'),
+                                         labels = c('Winter', 'Spring', 'Late Summer/Early Fall')),
                          fYEAR = factor(YEAR),
                          fMONTH = factor(MONTH)
                          )
@@ -104,22 +108,317 @@ cephs <- cephs |> mutate(VESSEL = as.factor(VESSEL),
 cephs
 ```
 
-This is still a lot of variables, but not all of them would be expected to have an effect on the others. For example, which vessel was used to conduct the survey should not have an effect on any of the other variables. Other variables provide much of the same information, such as *V_C_P*, *V_C_P_S*, and *SEAMAP*.
+This is still a lot of variables, but not all of them would be expected to have an effect on the others. For example, which vessel was used to conduct the survey should not have an effect on any of the other variables. Other variables provide much of the same information, such as *V_C_P*, *V_C_P_S*, and *SEAMAP*. I will likely choose a subset of the variables for the user to explore in the Shiny app.
+
+Make a list of numeric variables:
+```{r}
+numVar <- c('CEPH_COUNT', 'S_LAT', 'S_LON', 'TOWTIME', 'MONTH', 'YEAR', 'VOL_FILT', 'DEPTH_IBEG', 'DEPTH_IEND', 'DEPTH_IMAX', 'DEPTH_SSTA', 'TEMP_SSURF', 'B_PRSSR')
+```
+
+Make a list of categorical variables:
+```{r}
+catVar <- c('VESSEL', 'CRUISE_NO', 'P_STA_NO', 'SEAMAP', 'SAMPLE_NO', 'GEAR_LOC', 'SEASON', 'ITS_CODE', 'V_C_P', 'V_C_P_S', 'fYEAR', 'fMONTH')
+```
+
+Make a list of time variables:
+```{r}
+timeVar <- c('GEAR_IN', 'GEAR_OUT')
+```
+
+* Of all these variables, I will focus on the following:
+  + Numeric: cephalopod count, latitude, longitude, volume filtered, depth beginning, depth end, station depth, and sea surface temperature
+  + Categorical: cruise number, gear location, season, year, month
+  + Time: gear in, gear out
+```{r}
+# Selected numeric variables
+selNumVar <- c('CEPH_COUNT', 'S_LAT', 'S_LON', 'VOL_FILT', 'DEPTH_IBEG', 'DEPTH_IEND', 'DEPTH_SSTA', 'TEMP_SSURF')
+
+# Selected categorical variables
+selCatVar <- c('CRUISE_NO', 'GEAR_LOC', 'SEASON', 'fYEAR', 'fMONTH')
+```
+
+  
+### Contingency Tables
+
+#### One-Way
+
+Create one-way contingency tables for the selected categorical variables
+```{r}
+# Cruise number
+cephs |>
+  group_by(CRUISE_NO) |>
+  summarize(count = n())
+
+# Gear location
+cephs |>
+  group_by(GEAR_LOC) |>
+  summarize(count = n())
+
+# Season
+cephs |>
+  group_by(SEASON) |>
+  summarize(count = n())
+
+# Year
+cephs |>
+  group_by(fYEAR) |>
+  summarize(count = n())
+
+# Month
+cephs |>
+  group_by(fMONTH) |>
+  summarize(count = n())
+```
+
+#### Two-Way
+
+Create two-way contingency tables for interesting combinations of categorical variables (not all combinations):
+```{r}
+# Cruise number and gear location
+cephs |>
+  group_by(CRUISE_NO, GEAR_LOC) |>
+  summarize(count = n()) |>
+  pivot_wider(names_from = GEAR_LOC, values_from = count)
+
+# Season and gear location
+cephs |>
+  group_by(SEASON, GEAR_LOC) |>
+  summarize(count = n()) |>
+  pivot_wider(names_from = GEAR_LOC, values_from = count)
+
+# Season and year
+cephs |>
+  group_by(SEASON, fYEAR) |>
+  summarize(count = n()) |>
+  pivot_wider(names_from = fYEAR, values_from = count)
+
+```
+
+### Numeric Summaries
+
+Create numeric summaries (means, medians, standard deviations, interquartile range) for quantitative variables at the levels of categorical variables:
+```{r}
+cephs |>
+  group_by(CRUISE_NO) |>
+  summarize(across(all_of(selNumVar), 
+                   list('mean' = ~ signif(mean(.x, na.rm = TRUE), digits = 3), 
+                        'median' = ~ signif(median(.x, na.rm = TRUE), digits = 3),
+                        'sd' = ~ signif(sd(.x, na.rm = TRUE), digits = 3),
+                        'IQR' = ~ signif(IQR(.x, na.rm = TRUE), digits = 3)), 
+                   .names = "{.fn}_{.col}"),
+            count = n())
+
+cephs |>
+  group_by(GEAR_LOC) |>
+  summarize(across(all_of(selNumVar), 
+                   list('mean' = ~ signif(mean(.x, na.rm = TRUE), digits = 3), 
+                        'median' = ~ signif(median(.x, na.rm = TRUE), digits = 3),
+                        'sd' = ~ signif(sd(.x, na.rm = TRUE), digits = 3),
+                        'IQR' = ~ signif(IQR(.x, na.rm = TRUE), digits = 3)), 
+                   .names = "{.fn}_{.col}"),
+            count = n())
+    
+cephs |>
+  group_by(SEASON) |>
+  summarize(across(all_of(selNumVar), 
+                   list('mean' = ~ signif(mean(.x, na.rm = TRUE), digits = 3), 
+                        'median' = ~ signif(median(.x, na.rm = TRUE), digits = 3),
+                        'sd' = ~ signif(sd(.x, na.rm = TRUE), digits = 3),
+                        'IQR' = ~ signif(IQR(.x, na.rm = TRUE), digits = 3)), 
+                   .names = "{.fn}_{.col}"),
+            count = n())
+
+cephs |>
+  group_by(fYEAR) |>
+  summarize(across(all_of(selNumVar), 
+                   list('mean' = ~ signif(mean(.x, na.rm = TRUE), digits = 3), 
+                        'median' = ~ signif(median(.x, na.rm = TRUE), digits = 3),
+                        'sd' = ~ signif(sd(.x, na.rm = TRUE), digits = 3),
+                        'IQR' = ~ signif(IQR(.x, na.rm = TRUE), digits = 3)), 
+                   .names = "{.fn}_{.col}"),
+            count = n())
+
+cephs |>
+  group_by(fMONTH) |>
+  summarize(across(all_of(selNumVar), 
+                   list('mean' = ~ signif(mean(.x, na.rm = TRUE), digits = 3), 
+                        'median' = ~ signif(median(.x, na.rm = TRUE), digits = 3),
+                        'sd' = ~ signif(sd(.x, na.rm = TRUE), digits = 3),
+                        'IQR' = ~ signif(IQR(.x, na.rm = TRUE), digits = 3)), 
+                   .names = "{.fn}_{.col}"),
+            count = n())
+
+```
+
+### Plots
+
+#### Univariate Plots
+
+```{r}
+# Histogram
+ggplot(data = cephs, aes(CEPH_COUNT/VOL_FILT*1000)) +
+  geom_histogram() +
+  labs(x = 'Abundance <br>(cephalopods 1000 m<sup>-3</sup>)',
+       y = 'Frequency') +
+  theme_classic() + 
+  theme(axis.title.x = element_markdown())
+```
+
+
+```{r}
+# Density Estimates
+ggplot(data = cephs, aes(CEPH_COUNT/VOL_FILT*1000)) +
+  geom_density() +
+  labs(x = 'Abundance <br>(cephalopods 1000 m<sup>-3</sup>)',
+       y = 'Density') +
+  theme_classic() + 
+  theme(axis.title.x = element_markdown())
+```
+
+```{r}
+# Bar chart
+ggplot(data = cephs, aes(CRUISE_NO)) +
+  geom_bar() +
+  labs(x = 'Cruise Number',
+       y = 'Number of Samples Collected') +
+  theme_classic()
+```
 
 
 
-Produce numerical and graphical summaries to investigate the data. These should include:
-– One-way and Two-way contingency tables
-– Numerical summaries (means, medians, sds, etc.) for quantitative variables at levels of categorical
-variables
-– Create at least six distinct plots (bar chart, side-by-side bar chart, histogram, box plot, scatter
-plot, faceted version of one of those, etc.).
-∗ At least four of these should display multivariate information via the type of graph, by utilizing
-coloring, grouping, etc.
-1
-∗ All plots should have nice labels and titles.
-∗ Some kind of faceting should be used somewhere.
-∗ At least one plot should be a plot that we didn’t cover in class (say a heatmap or something
-like that - depends on your data - lots of good examples to consider here)
+#### Multivariate Plots
+
+```{r}
+# Stacked bar chart
+ggplot(data = cephs, aes(x = fYEAR, fill = SEASON)) +
+  geom_bar(position = 'stack') +
+  labs(x = 'Year',
+       y ='Number of Samples Collected',
+       fill = 'Season')
+```
+
+```{r}
+# Side-by-side bar chart
+ggplot(data = cephs, aes(x = GEAR_LOC, fill = SEASON)) +
+  geom_bar(position = 'dodge') +
+  labs(x = 'Gear location',
+       y ='Number of Samples Collected',
+       fill = 'Season')
+```
+
+```{r}
+# Box plot
+ggplot(data = cephs, aes(x = SEASON, 
+                         y = TEMP_SSURF, 
+                         fill = SEASON)) +
+  geom_boxplot() +
+  labs(x = 'Season',
+       y = 'Sea Surface Temperature (degrees Celsius)') +
+  theme_classic() +
+  theme(legend.position = 'none')
+```
+
+```{r}
+# Faceted violin plot with square-root transformed y data
+ggplot(data = cephs, aes(x = SEASON,
+                         y = sqrt(CEPH_COUNT/VOL_FILT*1000),
+                         fill = SEASON)) +
+  geom_violin() +
+  facet_wrap(cephs$ fYEAR) +
+  labs(y = 'Square Root Transformed Abundance <br>(cephalopods 1000 m<sup>-3</sup>)',
+       x = NULL,
+       fill = 'Season') +
+  theme(
+    axis.title.y = element_markdown(),
+    axis.text.x = element_blank()
+  )
+```
+
+
+```{r}
+# Scatterplot
+ggplot(data = cephs, aes(x = abs(DEPTH_IBEG - DEPTH_IEND), 
+                         y = (CEPH_COUNT/VOL_FILT*1000))) +
+  geom_point() +
+  labs(x = 'Approximate depth of sampling (m)',
+       y = 'Abundance <br>(cephalopods 1000 m<sup>-3</sup>)') + 
+  theme_classic() + 
+  theme(
+    axis.title.y = element_markdown()
+  )
+```
+
+
+```{r}
+# Scatterplot with categorical variable
+ggplot(data = cephs, aes(x = abs(DEPTH_IBEG - DEPTH_IEND), 
+                         y = ((CEPH_COUNT/VOL_FILT*1000)),
+                         color = SEASON)) +
+  geom_point() +
+  labs(x = 'Approximate depth of sampling (m)',
+       y = 'Abundance <br>(cephalopods 1000 m<sup>-3</sup>)',
+       color = 'Season') + 
+  theme_classic() + 
+  theme(
+    axis.title.y = element_markdown()
+  )
+```
+
+
+```{r}
+# Scatterplot with third numeric variable
+ggplot(data = cephs, aes(x = abs(DEPTH_IBEG - DEPTH_IEND), 
+                         y = DEPTH_SSTA,
+                         size = (CEPH_COUNT/VOL_FILT*1000))) +
+  geom_point() +
+  labs(x = 'Approximate depth of sampling (m)',
+       y = 'Water Column Depth (m)',
+       size = 'Abundance <br>(cephalopods 1000 m<sup>-3</sup>)') + 
+  theme_classic() + 
+  theme(
+    legend.title = element_markdown()
+  )
+```
+
+```{r}
+# Map with points sized by value of numeric variable
+
+# Combine samples collected at the same site
+cephsBySite <- cephs |>
+  group_by(V_C_P) |>
+  summarize(cephCountsBySite = mean(CEPH_COUNT)*n(),
+            totalVolFilt = mean(VOL_FILT)*n(),
+            S_LAT = first(S_LAT),
+            S_LON = first(S_LON),
+            CRUISE_NO = first(CRUISE_NO),
+            YEAR = first(YEAR),
+            MONTH = first(MONTH),
+            SEASON = first(SEASON),
+            DEPTH = max(DEPTH_IMAX),
+            MIN_DEPTH = min(DEPTH_IEND))
+
+# Create map
+cephMap = leaflet(data = cephsBySite) %>%
+  addTiles() %>%
+  addCircleMarkers(
+      ~S_LON, ~S_LAT, 
+      radius = ~(cephCountsBySite/totalVolFilt*1000)*0.25, 
+      color = ~ifelse(cephsBySite$cephCountsBySite>0 , "red", "orange"),
+      stroke = TRUE, 
+      fillOpacity = 0.2,
+      label = ~as.character(V_C_P),
+      popup = ~paste("Site Number:", V_C_P, 
+                     "<br>Cephalopod Abundance:", signif((cephCountsBySite/totalVolFilt*1000), digits = 3), "cephalopods per 1000 m<sup>3</sup>", 
+                     "<br>Cruise Number:", CRUISE_NO,
+                     "<br>Year:", YEAR,
+                     "<br>Month:", MONTH,
+                     "<br>Season:", SEASON,
+                     "<br>Depth Sampled:", DEPTH, "to", MIN_DEPTH, "m"),
+      clusterOptions = markerClusterOptions(maxClusterRadius = 25)
+   )
+cephMap
+```
+
+
 
 
