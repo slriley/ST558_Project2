@@ -6,6 +6,7 @@ library(DT)
 library(tidyr)
 library(dplyr)
 library(tibble)
+library(ggplot2)
 
 # Load data ----
 
@@ -159,26 +160,37 @@ ui <- fluidPage(
                 
                 # Section header
                 h2("Graphs"),
-                # Select which categorical variables to plot
-                selectInput(inputId = 'plotCatVar',
-                            label = 'Choose which categorical variables to plot, if any',
-                            choices = names(selCatVar),
+                # Select which variables to plot
+                selectInput(inputId = 'plotVar',
+                            label = 'Choose up to three variables to plot:',
+                            choices = c(names(selCatVar), names(selNumVar)),
                             selected = NULL,
                             multiple = TRUE
                             ),
-                # Select which numeric variables to plot
-                selectInput(inputId = 'plotNumVar',
-                            label = 'Choose which numeric variables to plot, if any',
-                            choices = names(selNumVar),
-                            selected = NULL,
-                            multiple = TRUE
-                )                
+                
+                # Check why it's not working
+                verbatimTextOutput("check"),
+                
+                # Dynamic UI radio buttons to choose data distribution plot type
+                uiOutput("histDens"),
+                
+                # Dynamic UI radio buttons to choose bivariate barplot type
+                uiOutput("whichBar"),
+                
+                # Action button to produce plot
+                actionButton(inputId = 'producePlot',
+                             label = 'Produce graphs'),
               ),
               
               
               # Display contingency table or summary statistics table
               card(DTOutput(outputId = "conTable")), 
-              card(DTOutput(outputId = "sumTable"))
+              card(DTOutput(outputId = "sumTable")),
+              
+              # Display selected plot
+              card(plotOutput(outputId = 'barplot')),
+              card(plotOutput(outputId = 'dataDist')),
+              card(plotOutput(outputId = 'biBarplot')),
               
     ),
 
@@ -306,6 +318,159 @@ server <- function(input, output, session) {
   # Send summary statistics table to UI
   output$sumTable <- renderDataTable({ sumTblR() })
   
+  # Check input to figure out why it's not working
+  output$check <- renderText({ input$plotVar })
+  
+  
+  # Produce barplot when action button is clicked and one categorical variable 
+  # is selected
+  output$barplot <- renderPlot({
+    # Check that button has been clicked
+    req(input$producePlot)
+    # Check that at least one variable has been selected to plot
+    req(input$plotVar)
+    if ((length(input$plotVar) == 1) & (input$plotVar %in% names(selCatVar))) {
+      # Bar chart
+      ggplot(data = samples_selected(), aes(get(unname(selCatVar[input$plotVar])))) +
+        geom_bar() +
+        labs(x = paste(input$plotVar),
+             y = 'Number of Samples Collected') +
+        theme_classic()
+      }
+  })
+  
+  # Produce radio buttons to select histogram or density plot if one numeric 
+  # variable is selected
+  output$histDens <- renderUI({
+    req(input$plotVar)
+    if ((length(input$plotVar) == 1) & (input$plotVar %in% names(selNumVar))) {
+      radioButtons(inputId = "univarNum",
+                   label = "Select which data distribution plot to produce:",
+                   choices = c('Histogram', 'Smoothed Density Estimate'),
+                   selected = 'Smoothed Density Estimate'
+      )
+    } else {}
+
+  })
+  
+  # Produce chosen data distribution plot when action button is clicked
+  output$dataDist <- renderPlot({
+    # Check that button has been clicked
+    req(input$producePlot)
+    # Check that at least one variable has been selected to plot
+    req(input$plotVar)
+    # Produce plot
+    if (input$univarNum == 'Histogram') {
+      # Histogram
+      ggplot(data = samples_selected(), aes(get(unname(selNumVar[input$plotVar])))) +
+        geom_histogram() +
+        labs(x = paste(input$plotVar),
+             y = 'Frequency') +
+        theme_classic()
+    } else if (input$univarNum == 'Smoothed Density Estimate') {
+      # Density Estimates
+      ggplot(data = samples_selected(), aes(get(unname(selNumVar[input$plotVar])))) +
+        geom_density() +
+        labs(x = paste(input$plotVar),
+             y = 'Density') +
+        theme_classic()
+    }
+  })
+  
+  
+  # Produce radio buttons to select stacked or side-by-side barplot if two 
+  # categorical variables are selected
+  output$whichBar <- renderUI({
+    req(input$plotVar)
+    if ((length(input$plotVar) == 2) & (input$plotVar %in% names(selCatVar))) {
+      radioButtons(inputId = "bivarCat",
+                   label = "Select which barplot to produce:",
+                   choices = c('Stacked', 'Side-by-Side'),
+                   selected = 'Stacked'
+      )
+    }
+    
+  })
+  
+  # Produce chosen barplot when action button is clicked
+  output$biBarplot <- renderPlot({
+    # Check that button has been clicked
+    req(input$producePlot)
+    # Check that at least one variable has been selected to plot
+    req(input$plotVar)
+    # Produce plot
+    if (input$bivarCat == 'Stacked') {
+      # Stacked bar chart
+      ggplot(data = samples_selected(), 
+             aes(x = get(unname(selCatVar[input$plotVar[1]])), 
+                 fill = get(unname(selCatVar[input$plotVar[2]])))) +
+        geom_bar(position = 'stack') +
+        labs(x = paste(input$plotVar[1]),
+             y ='Number of Samples Collected',
+             fill = paste(input$plotVar[2])) +
+        theme_classic()
+    } 
+    # else if (input$univarNum == 'Smoothed Density Estimate') {
+    #   # Density Estimates
+    #   ggplot(data = samples_selected(), aes(get(unname(selNumVar[input$plotVar])))) +
+    #     geom_density() +
+    #     labs(x = paste(input$plotVar),
+    #          y = 'Density') +
+    #     theme_classic()
+    # }
+  })
+  
+  
+  # Produce dynamic widget to select which multivariate plot to produce
+
+  # isMultivariate <- reactive({
+  #   if (length(input$plotVar)) > 1){
+  #   
+  # }
+  # })
+  
+  # output$multivariate <- renderUI({
+  #   if (length(input$plotVar) == 2){
+  #     if (input$plotVar %in% selCatVar){
+  #       radioButtons(inputId = 'barType',
+  #                    label = 'Select type of barplot',
+  #                    choices = c('Stacked, Side-by-Side'),
+  #                    selected = 'Stacked'
+  #                    )        
+  #     } else if (input$plotVar %in% selNumVar){
+  #       radioButtons()
+  #     }
+  # 
+  #   }
+  #   tagList(
+  #     radioButtons()
+  #     sliderInput("n", "N", 1, 1000, 500),
+  #     textInput("label", "Label")
+  #   )
+  # })
+  # 
+  # # Create plot when the action button is clicked and ___
+  # conTblR <- reactive({
+  #   if (input$varType == 'Categorical') {
+  #     input$produceSum
+  #     if (length(input$conTableVar) == 1){
+  #       samples_selected() |>
+  #         group_by(get(unname(selCatVar[input$conTableVar]))) |>
+  #         summarize(count = n()) |>
+  #         #rename(get(unname(selCatVar[input$conTableVar])) = `get(unname(selCatVar[input$conTableVar))`) |>
+  #         remove_rownames()
+  #     } else if (length(input$conTableVar) == 2){
+  #       samples_selected() |>
+  #         group_by(get(unname(selCatVar[input$conTableVar[1]])), 
+  #                  get(unname(selCatVar[input$conTableVar[2]]))) |>
+  #         summarize(count = n()) |>
+  #         pivot_wider(names_from = `get(unname(selCatVar[input$conTableVar[1]]))`, 
+  #                     values_from = count) |>
+  #         remove_rownames()
+  #     }
+  #   }
+  # })
+  # 
   
 }
 
