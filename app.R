@@ -90,12 +90,26 @@ ui <- fluidPage(
     
     # About tab
     nav_panel(title = "About", 
-              p("Describe the purpose of the app"),
-              p("Description of the data and its source"),
-              a("SEAMAP", href = "https://seamap.org/data-portal/"),
-              p("Tell the user the purpose of the sidebar and each tab (main panel section) in the app"),
+              p("This Shiny app allows the user to explore data from the 
+                Southeast Monitoring and Assessment Program's plankton 
+                collection surveys."),
+              p("The data explored by this app are from the Southeast Area 
+                Monitoring and Assessment Program, a consortium which conducts
+                research in the Gulf of Mexico. The data consist of information 
+                about plankton collection surveys and give details about the 
+                net deployments. Finally, the number of paralarval cephalopods 
+                collected in each sample is also included in the data."),
+              a("Learn more about the SEAMAP program here.", 
+                href = "https://seamap.org/data-portal/"),
+              p("The sidebar widgets allow the user to select which years and 
+              seasons to include in the data, as well as select other variables 
+              to filter the data, and then subset the data for further use."),
+              p("The Data Download tab allows the user to view the filtered data
+                and download it if desired."),
+              p("The Data Exploration tab allows the user to explore the 
+                filtered data by making selections in the tab's widgets."),
               img(height = 300, width = 400, src = "squid.jpg"),
-              tags$caption("Squid paralarvae")
+              tags$caption("Squid paralarvae (Photo Credit: Shannon Riley, 2022)")
               ),
     
     # Data Download tab
@@ -184,8 +198,20 @@ ui <- fluidPage(
               
               
               # Display contingency table or summary statistics table
-              card(DTOutput(outputId = "conTable")), 
+              card(DTOutput(outputId = "conTable")),
               card(DTOutput(outputId = "sumTable")),
+              
+              # Not working
+              # uiOutput(outputId = "conTable"),
+              
+              # conditionalPanel(condition = "output.conTable == true",
+              #                  DTOutput(outputId = "conTable")),
+              # card(DTOutput(outputId = "conTable"),
+              #      DTOutput(outputId = "sumTable"),
+              #      plotOutput(outputId = 'barplot'),
+              #      plotOutput(outputId = 'dataDist'),
+              #      plotOutput(outputId = 'biBarplot')),
+              #card(DTOutput(outputId = "sumTable")),
               
               # Display selected plot
               card(plotOutput(outputId = 'barplot')),
@@ -296,6 +322,12 @@ server <- function(input, output, session) {
   # Send contingency table to UI
   output$conTable <- renderDataTable({ conTblR() })
   
+  # Not doing what I want
+  # output$conTable <- renderUI({ 
+  #   output$renConTblR <- renderDataTable ({conTblR()})
+  #   dataTableOutput("renConTblR")
+  #     })
+  
 
   
   # Create summary statistics table when the action button is clicked and 
@@ -329,28 +361,31 @@ server <- function(input, output, session) {
     req(input$producePlot)
     # Check that at least one variable has been selected to plot
     req(input$plotVar)
-    if ((length(input$plotVar) == 1) & (input$plotVar %in% names(selCatVar))) {
-      # Bar chart
-      ggplot(data = samples_selected(), aes(get(unname(selCatVar[input$plotVar])))) +
-        geom_bar() +
-        labs(x = paste(input$plotVar),
-             y = 'Number of Samples Collected') +
-        theme_classic()
+    if (length(input$plotVar) == 1) {
+      if (input$plotVar %in% names(selCatVar)) {
+        # Bar chart
+        ggplot(data = samples_selected(), aes(get(unname(selCatVar[input$plotVar])))) +
+          geom_bar() +
+          labs(x = paste(input$plotVar),
+               y = 'Number of Samples Collected') +
+          theme_classic()
       }
+    } 
   })
   
   # Produce radio buttons to select histogram or density plot if one numeric 
   # variable is selected
   output$histDens <- renderUI({
     req(input$plotVar)
-    if ((length(input$plotVar) == 1) & (input$plotVar %in% names(selNumVar))) {
-      radioButtons(inputId = "univarNum",
-                   label = "Select which data distribution plot to produce:",
-                   choices = c('Histogram', 'Smoothed Density Estimate'),
-                   selected = 'Smoothed Density Estimate'
-      )
-    } else {}
-
+    if (length(input$plotVar) == 1) {
+      if (input$plotVar %in% names(selNumVar)) {
+        radioButtons(inputId = "univarNum",
+                     label = "Select which data distribution plot to produce:",
+                     choices = c('Histogram', 'Smoothed Density Estimate'),
+                     selected = 'Smoothed Density Estimate'
+        )
+      }
+    } 
   })
   
   # Produce chosen data distribution plot when action button is clicked
@@ -359,6 +394,8 @@ server <- function(input, output, session) {
     req(input$producePlot)
     # Check that at least one variable has been selected to plot
     req(input$plotVar)
+    # Check that a plot type was selected
+    req(input$univarNum)
     # Produce plot
     if (input$univarNum == 'Histogram') {
       # Histogram
@@ -380,15 +417,29 @@ server <- function(input, output, session) {
   
   # Produce radio buttons to select stacked or side-by-side barplot if two 
   # categorical variables are selected
+  # output$whichBar <- renderUI({
+  #   req(input$plotVar)
+  #   if ((length(input$plotVar) == 2) & (input$plotVar %in% names(selCatVar))) {
+  #     radioButtons(inputId = "bivarCat",
+  #                  label = "Select which barplot to produce:",
+  #                  choices = c('Stacked', 'Side-by-Side'),
+  #                  selected = 'Stacked'
+  #     )
+  #   }
+  #   
+  # })
+  
   output$whichBar <- renderUI({
     req(input$plotVar)
-    if ((length(input$plotVar) == 2) & (input$plotVar %in% names(selCatVar))) {
-      radioButtons(inputId = "bivarCat",
-                   label = "Select which barplot to produce:",
-                   choices = c('Stacked', 'Side-by-Side'),
-                   selected = 'Stacked'
-      )
-    }
+    if (length(input$plotVar) == 2) {
+      if (all(input$plotVar %in% names(selCatVar))) {
+        radioButtons(inputId = "bivarCat",
+                     label = "Select which barplot to produce:",
+                     choices = c('Stacked', 'Side-by-Side'),
+                     selected = 'Stacked'
+        )
+      }
+    } 
     
   })
   
@@ -403,7 +454,7 @@ server <- function(input, output, session) {
       # Stacked bar chart
       ggplot(data = samples_selected(), 
              aes(x = get(unname(selCatVar[input$plotVar[1]])), 
-                 fill = get(unname(selCatVar[input$plotVar[2]])))) +
+                 fill = as.factor(get(unname(selCatVar[input$plotVar[2]]))))) +
         geom_bar(position = 'stack') +
         labs(x = paste(input$plotVar[1]),
              y ='Number of Samples Collected',
