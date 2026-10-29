@@ -23,7 +23,7 @@ I have selected data from the Southeast Area Monitoring and Assessment Program's
 library(dplyr)     # to perform basic EDA
 library(ggplot2)   # to create plots
 library(ggtext)    # to improve plot formatting
-library(leaflet)   # to make a map plot
+#library(leaflet)   # to make a map plot
 library(readr)     # to save the cleaned data as a CSV file
 library(readxl)    # to read in Excel files
 library(tidyr)     # to produce and up tibbles
@@ -387,44 +387,46 @@ ggplot(data = cephs, aes(x = abs(DEPTH_IBEG - DEPTH_IEND),
   )
 ```
 
-```{r}
-# Map with points sized by value of numeric variable
 
-# Combine samples collected at the same site
-cephsBySite <- cephs |>
-  group_by(V_C_P) |>
-  summarize(cephCountsBySite = mean(CEPH_COUNT)*n(),
-            totalVolFilt = mean(VOL_FILT)*n(),
-            S_LAT = first(S_LAT),
-            S_LON = first(S_LON),
-            CRUISE_NO = first(CRUISE_NO),
-            YEAR = first(YEAR),
-            MONTH = first(MONTH),
-            SEASON = first(SEASON),
-            DEPTH = max(DEPTH_IMAX),
-            MIN_DEPTH = min(DEPTH_IEND))
+Sadly had to comment out the map with points sized by value of numeric variable to get the app to deploy. Apparently it's a known problem with terra (https://forum.posit.co/t/deployment-fails-on-shinyapps-io-because-of-terra/214331/19), but very much a bummer because this leaflet map was so cool.
+<!-- ```{r} -->
+<!-- # Map with points sized by value of numeric variable -->
 
-# Create map
-cephMap = leaflet(data = cephsBySite) %>%
-  addTiles() %>%
-  addCircleMarkers(
-      ~S_LON, ~S_LAT, 
-      radius = ~(cephCountsBySite/totalVolFilt*1000)*0.25, 
-      color = ~ifelse(cephsBySite$cephCountsBySite>0 , "red", "orange"),
-      stroke = TRUE, 
-      fillOpacity = 0.2,
-      label = ~as.character(V_C_P),
-      popup = ~paste("Site Number:", V_C_P, 
-                     "<br>Cephalopod Abundance:", signif((cephCountsBySite/totalVolFilt*1000), digits = 3), "cephalopods per 1000 m<sup>3</sup>", 
-                     "<br>Cruise Number:", CRUISE_NO,
-                     "<br>Year:", YEAR,
-                     "<br>Month:", MONTH,
-                     "<br>Season:", SEASON,
-                     "<br>Depth Sampled:", DEPTH, "to", MIN_DEPTH, "m"),
-      clusterOptions = markerClusterOptions(maxClusterRadius = 25)
-   )
-cephMap
-```
+<!-- # Combine samples collected at the same site -->
+<!-- cephsBySite <- cephs |> -->
+<!--   group_by(V_C_P) |> -->
+<!--   summarize(cephCountsBySite = mean(CEPH_COUNT)*n(), -->
+<!--             totalVolFilt = mean(VOL_FILT)*n(), -->
+<!--             S_LAT = first(S_LAT), -->
+<!--             S_LON = first(S_LON), -->
+<!--             CRUISE_NO = first(CRUISE_NO), -->
+<!--             YEAR = first(YEAR), -->
+<!--             MONTH = first(MONTH), -->
+<!--             SEASON = first(SEASON), -->
+<!--             DEPTH = max(DEPTH_IMAX), -->
+<!--             MIN_DEPTH = min(DEPTH_IEND)) -->
+
+<!-- # Create map -->
+<!-- cephMap = leaflet(data = cephsBySite) %>% -->
+<!--   addTiles() %>% -->
+<!--   addCircleMarkers( -->
+<!--       ~S_LON, ~S_LAT,  -->
+<!--       radius = ~(cephCountsBySite/totalVolFilt*1000)*0.25,  -->
+<!--       color = ~ifelse(cephsBySite$cephCountsBySite>0 , "red", "orange"), -->
+<!--       stroke = TRUE,  -->
+<!--       fillOpacity = 0.2, -->
+<!--       label = ~as.character(V_C_P), -->
+<!--       popup = ~paste("Site Number:", V_C_P,  -->
+<!--                      "<br>Cephalopod Abundance:", signif((cephCountsBySite/totalVolFilt*1000), digits = 3), "cephalopods per 1000 m<sup>3</sup>",  -->
+<!--                      "<br>Cruise Number:", CRUISE_NO, -->
+<!--                      "<br>Year:", YEAR, -->
+<!--                      "<br>Month:", MONTH, -->
+<!--                      "<br>Season:", SEASON, -->
+<!--                      "<br>Depth Sampled:", DEPTH, "to", MIN_DEPTH, "m"), -->
+<!--       clusterOptions = markerClusterOptions(maxClusterRadius = 25) -->
+<!--    ) -->
+<!-- cephMap -->
+<!-- ``` -->
 
 
 

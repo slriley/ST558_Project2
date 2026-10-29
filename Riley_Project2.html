@@ -1,0 +1,1359 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Riley_Project2</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="Riley_Project2_files/libs/clipboard/clipboard.min.js"></script>
+<script src="Riley_Project2_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="Riley_Project2_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="Riley_Project2_files/libs/quarto-html/popper.min.js"></script>
+<script src="Riley_Project2_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="Riley_Project2_files/libs/quarto-html/anchor.min.js"></script>
+<link href="Riley_Project2_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="Riley_Project2_files/libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="Riley_Project2_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="Riley_Project2_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="Riley_Project2_files/libs/bootstrap/bootstrap-215b371544c282197b31c8aa00ce3677.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="fullcontent quarto-light">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Riley_Project2</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="project-description" class="level2">
+<h2 class="anchored" data-anchor-id="project-description">Project Description</h2>
+<p>This project will create a Shiny app to explore a selected dataset.<br>
+</p>
+</section>
+<section id="author-information" class="level2">
+<h2 class="anchored" data-anchor-id="author-information">Author Information</h2>
+<p>Author: Shannon Riley<br>
+Organization: NCSU ST 558<br>
+Date: Fall 2026 (Completed 10/__/2026)<br>
+</p>
+</section>
+<section id="data-description" class="level2">
+<h2 class="anchored" data-anchor-id="data-description">Data Description</h2>
+<p>I have selected data from the Southeast Area Monitoring and Assessment Program’s (SEAMAP) plankton surveys as my data for this project. This is a of plankton sampling cruises for several years, separated by the type of net used. I will only be using data from cruises that used a multiple opening-closing net and environmental sensing system (MOCNESS). I used a portion of this data for my master’s thesis, so I am excited to explore the data I wasn’t able to use before.</p>
+</section>
+<section id="data-exploration" class="level2">
+<h2 class="anchored" data-anchor-id="data-exploration">Data Exploration</h2>
+<p>Read in the data for only the MOCNESS samples (2nd sheet of the excel file:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>cephs <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(<span class="st">'data/SEAMAP_Cephalopod.xls'</span>, <span class="at">sheet =</span> <span class="st">'MOCNESS'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Produce a general summary of the data:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(cephs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>tibble [1,694 × 32] (S3: tbl_df/tbl/data.frame)
+ $ VESSEL    : chr [1:1694] "63" "63" "63" "63" ...
+ $ CRUISE_NO : chr [1:1694] "072" "072" "072" "072" ...
+ $ P_STA_NO  : chr [1:1694] "00003" "00003" "00003" "00003" ...
+ $ SEAMAP    : chr [1:1694] "B165" "B165" "B165" "B165" ...
+ $ SAMPLE_NO : chr [1:1694] "33539" "33540" "33541" "33542" ...
+ $ CEPH_COUNT: num [1:1694] 0 0 0 0 0 0 0 1 0 0 ...
+ $ GEAR_ICD  : chr [1:1694] "09" "09" "09" "09" ...
+ $ GEAR_LOC  : chr [1:1694] "0" "1" "2" "3" ...
+ $ MESH_ICD  : chr [1:1694] "05" "05" "05" "05" ...
+ $ NET_NO    : logi [1:1694] NA NA NA NA NA NA ...
+ $ S_LAT     : num [1:1694] 29.2 29.2 29.2 29.2 29.2 ...
+ $ S_LON     : num [1:1694] -86 -86 -86 -86 -86 ...
+ $ GEAR_IN   : POSIXct[1:1694], format: "2007-03-18 16:04:28" "2007-03-18 16:42:47" ...
+ $ GEAR_OUT  : POSIXct[1:1694], format: "2007-03-18 16:42:43" "2007-03-18 16:46:48" ...
+ $ TOWTIME   : num [1:1694] 38.25 4.02 6.22 6.42 6.23 ...
+ $ MONTH     : num [1:1694] 3 3 3 3 3 3 3 3 3 3 ...
+ $ YEAR      : num [1:1694] 2007 2007 2007 2007 2007 ...
+ $ SEASON    : chr [1:1694] "WINTER" "WINTER" "WINTER" "WINTER" ...
+ $ VESSEL_SPD: num [1:1694] 1.8 1.8 1.8 1.8 1.8 1.8 1.8 1.4 1.4 1.4 ...
+ $ VOL_FILT  : num [1:1694] 1342 208 310 323 316 ...
+ $ DEPTH_IBEG: num [1:1694] 0 117 99 80 59 39 18 0 60 39 ...
+ $ DEPTH_IEND: num [1:1694] 118 99 80 60 39 19 13 60 40 20 ...
+ $ DEPTH_IMAX: num [1:1694] 118 117 99 80 59 39 18 60 60 39 ...
+ $ VOL_DISP  : num [1:1694] 134 25 30 30 94 218 43 138 67 110 ...
+ $ DEPTH_SSTA: num [1:1694] 107 107 107 107 107 107 107 40 40 40 ...
+ $ TEMP_SSURF: num [1:1694] 18.9 18.9 18.9 18.9 18.9 ...
+ $ TEMP_BOT  : num [1:1694] 14.4 14.4 14.4 14.4 14.4 ...
+ $ TEMP_SAIR : num [1:1694] 17.4 17.4 17.4 17.4 17.4 17.4 17.4 16.2 16.2 16.2 ...
+ $ B_PRSSR   : num [1:1694] 1024 1024 1024 1024 1024 ...
+ $ ITS_CODE  : chr [1:1694] "US-WP" "US-WP" "US-WP" "US-WP" ...
+ $ V_C_P     : chr [1:1694] "6307200003" "6307200003" "6307200003" "6307200003" ...
+ $ V_C_P_S   : chr [1:1694] "630720000333539" "630720000333540" "630720000333541" "630720000333542" ...</code></pre>
+</div>
+</div>
+<ul>
+<li>Variable descriptions:</li>
+<li>VESSEL= Vessel number (I can give you a list if you want)</li>
+<li>CRUISE_NO = Cruise number</li>
+<li>P_STA_NO = Sequential station number for that cruise</li>
+<li>SEAMAP = Designated standard grid number</li>
+<li>SAMPLE_NO = Unique sample number</li>
+<li>CEPH_COUNT = number of cephalopods counted/pulled</li>
+<li>GEAR_ICD = Gear designation (01=bongo, 03=nesuton, 09=MOCNESS, etc.)</li>
+<li>GEAR_LOC = sample location (mainly for bongos, R or L)</li>
+<li>MESH_ICD = Mesh size (03=0.333mm)</li>
+<li>NET_NO = Net number - Mainly for the MOCNESS tows</li>
+<li>S_LAT= Latitude in decimal degrees</li>
+<li>S_LON = Longitude in decimal degrees</li>
+<li>GEAR_IN = Time the gear went into the water (started fishing) in GMT</li>
+<li>GEAR_OUT = Time the gear came out of the water (stopped fishing) in GMT</li>
+<li>TOWTIME = Time gear was towed (decimal minutes)</li>
+<li>MONTH = Month</li>
+<li>YEAR = Year</li>
+<li>SEASON = Survey season</li>
+<li>VESSEL_SPD = vessel speed (knots)</li>
+<li>VOL_FILT = volume filtered by the nets (cubic meters)</li>
+<li>DEPTH_IBEG = depth of the beginning of the tow (meters)</li>
+<li>DEPTH_IEND = depth at the end of the tow (meters)</li>
+<li>DEPTH_IMAX = maximum depth of the tow (meters)</li>
+<li>VOL_DISP = volume displacement of the sample prior to processing (milliliters)</li>
+<li>DEPTH_SSTA = station depth (fathoms)</li>
+<li>TEMP_SSURF = surface water temp in Celsius</li>
+<li>TEMP_BOT = bottom water temp in Celsius</li>
+<li>TEMP_SAIR = air temp in Celsius</li>
+<li>B_PRSSR = barometric pressure (millibars)</li>
+<li>ITS_CODE = survey code</li>
+<li>V_C_P = concatenation of vessel, cruise, and station number</li>
+<li>V_C_P_S = concatenation of vessel, cruise, station number. and sample number</li>
+</ul>
+<p>Check for missing data:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>cephs <span class="sc">|&gt;</span> <span class="fu">summarize</span>(<span class="fu">across</span>(<span class="fu">everything</span>(), <span class="sc">~</span> <span class="fu">sum</span>(<span class="fu">is.na</span>(.))))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 32
+  VESSEL CRUISE_NO P_STA_NO SEAMAP SAMPLE_NO CEPH_COUNT GEAR_ICD GEAR_LOC
+   &lt;int&gt;     &lt;int&gt;    &lt;int&gt;  &lt;int&gt;     &lt;int&gt;      &lt;int&gt;    &lt;int&gt;    &lt;int&gt;
+1      0         0        0    380         0          0        0        0
+# ℹ 24 more variables: MESH_ICD &lt;int&gt;, NET_NO &lt;int&gt;, S_LAT &lt;int&gt;, S_LON &lt;int&gt;,
+#   GEAR_IN &lt;int&gt;, GEAR_OUT &lt;int&gt;, TOWTIME &lt;int&gt;, MONTH &lt;int&gt;, YEAR &lt;int&gt;,
+#   SEASON &lt;int&gt;, VESSEL_SPD &lt;int&gt;, VOL_FILT &lt;int&gt;, DEPTH_IBEG &lt;int&gt;,
+#   DEPTH_IEND &lt;int&gt;, DEPTH_IMAX &lt;int&gt;, VOL_DISP &lt;int&gt;, DEPTH_SSTA &lt;int&gt;,
+#   TEMP_SSURF &lt;int&gt;, TEMP_BOT &lt;int&gt;, TEMP_SAIR &lt;int&gt;, B_PRSSR &lt;int&gt;,
+#   ITS_CODE &lt;int&gt;, V_C_P &lt;int&gt;, V_C_P_S &lt;int&gt;</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># More convenient to view</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">colSums</span>(<span class="fu">is.na</span>(cephs))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    VESSEL  CRUISE_NO   P_STA_NO     SEAMAP  SAMPLE_NO CEPH_COUNT   GEAR_ICD 
+         0          0          0        380          0          0          0 
+  GEAR_LOC   MESH_ICD     NET_NO      S_LAT      S_LON    GEAR_IN   GEAR_OUT 
+         0          0       1694          0          0          0          0 
+   TOWTIME      MONTH       YEAR     SEASON VESSEL_SPD   VOL_FILT DEPTH_IBEG 
+         0          0          0          0        811          1          0 
+DEPTH_IEND DEPTH_IMAX   VOL_DISP DEPTH_SSTA TEMP_SSURF   TEMP_BOT  TEMP_SAIR 
+         0          0        702          0          0       1169        176 
+   B_PRSSR   ITS_CODE      V_C_P    V_C_P_S 
+       176          0          0          0 </code></pre>
+</div>
+</div>
+<p>Before starting any additional EDA, I’m going to remove the variables with the most NAs:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>cephs <span class="ot">&lt;-</span> cephs <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="sc">!</span><span class="fu">c</span>(NET_NO, VESSEL_SPD, VOL_DISP, TEMP_BOT))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Now I’ll look at a summary of the remaining variables:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(cephs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>       VESSEL         CRUISE_NO         P_STA_NO          SEAMAP    
+ Length   :1694   Length   :1694   Length   :1694   Length   :1694  
+ N.unique :   3   N.unique :  12   N.unique : 142   N.unique : 108  
+ N.blank  :   0   N.blank  :   0   N.blank  :   0   N.blank  :   0  
+ Min.nchar:   2   Min.nchar:   3   Min.nchar:   5   Min.nchar:   3  
+ Max.nchar:   2   Max.nchar:   3   Max.nchar:   5   Max.nchar:   5  
+                                                    NAs      : 380  
+                                                                    
+     SAMPLE_NO      CEPH_COUNT         GEAR_ICD         GEAR_LOC   
+ Length   :1694   Min.   : 0.00   Length   :1694   Length   :1694  
+ N.unique :1693   1st Qu.: 0.00   N.unique :   1   N.unique :   9  
+ N.blank  :   0   Median : 0.00   N.blank  :   0   N.blank  :   0  
+ Min.nchar:   5   Mean   : 2.58   Min.nchar:   2   Min.nchar:   1  
+ Max.nchar:   5   3rd Qu.: 3.00   Max.nchar:   2   Max.nchar:   1  
+                  Max.   :87.00                                    
+                                                                   
+      MESH_ICD        S_LAT           S_LON       
+ Length   :1694   Min.   :15.98   Min.   :-96.51  
+ N.unique :   1   1st Qu.:26.00   1st Qu.:-90.51  
+ N.blank  :   0   Median :27.50   Median :-86.99  
+ Min.nchar:   2   Mean   :26.18   Mean   :-87.61  
+ Max.nchar:   2   3rd Qu.:28.32   3rd Qu.:-84.51  
+                  Max.   :29.99   Max.   :-77.84  
+                                                  
+    GEAR_IN                       GEAR_OUT                      TOWTIME       
+ Min.   :2007-03-18 16:04:28   Min.   :2007-03-18 16:42:43   Min.   :-87.000  
+ 1st Qu.:2009-03-14 17:34:58   1st Qu.:2009-03-14 17:42:15   1st Qu.:  5.683  
+ Median :2011-05-08 03:31:22   Median :2011-05-08 03:38:15   Median :  6.633  
+ Mean   :2011-04-21 22:28:56   Mean   :2011-04-21 22:36:16   Mean   :  7.319  
+ 3rd Qu.:2012-05-21 16:40:36   3rd Qu.:2012-05-21 16:47:29   3rd Qu.:  7.925  
+ Max.   :2016-09-29 07:19:47   Max.   :2016-09-29 07:26:44   Max.   : 59.083  
+                                                                              
+     MONTH            YEAR            SEASON        VOL_FILT     
+ Min.   :1.000   Min.   :2007   Length   :1694   Min.   :  10.0  
+ 1st Qu.:3.000   1st Qu.:2009   N.unique :   3   1st Qu.: 247.0  
+ Median :5.000   Median :2011   N.blank  :   0   Median : 287.0  
+ Mean   :5.466   Mean   :2011   Min.nchar:   6   Mean   : 314.7  
+ 3rd Qu.:9.000   3rd Qu.:2012   Max.nchar:  10   3rd Qu.: 347.0  
+ Max.   :9.000   Max.   :2016                    Max.   :2284.0  
+                                                 NAs    :1       
+   DEPTH_IBEG       DEPTH_IEND       DEPTH_IMAX       DEPTH_SSTA    
+ Min.   :  0.00   Min.   :  0.00   Min.   :  0.00   Min.   :  23.0  
+ 1st Qu.: 19.00   1st Qu.: 19.00   1st Qu.: 21.00   1st Qu.:  70.0  
+ Median : 39.00   Median : 40.00   Median : 42.35   Median : 189.0  
+ Mean   : 47.15   Mean   : 46.86   Mean   : 56.40   Mean   : 525.3  
+ 3rd Qu.: 68.00   3rd Qu.: 66.00   3rd Qu.: 80.00   3rd Qu.: 800.0  
+ Max.   :398.00   Max.   :399.00   Max.   :398.60   Max.   :2862.0  
+                                                                    
+   TEMP_SSURF      TEMP_SAIR        B_PRSSR          ITS_CODE   
+ Min.   :18.95   Min.   :12.10   Min.   :1008   Length   :1694  
+ 1st Qu.:22.13   1st Qu.:23.40   1st Qu.:1012   N.unique :   6  
+ Median :27.24   Median :26.90   Median :1015   N.blank  :   0  
+ Mean   :26.05   Mean   :25.67   Mean   :1015   Min.nchar:   4  
+ 3rd Qu.:29.17   3rd Qu.:28.10   3rd Qu.:1017   Max.nchar:   5  
+ Max.   :30.65   Max.   :33.40   Max.   :1028                   
+                 NAs    :176     NAs    :176                    
+       V_C_P           V_C_P_S    
+ Length   :1694   Length   :1694  
+ N.unique : 271   N.unique :1693  
+ N.blank  :   0   N.blank  :   0  
+ Min.nchar:  10   Min.nchar:  15  
+ Max.nchar:  10   Max.nchar:  15  
+                                  
+                                  </code></pre>
+</div>
+</div>
+<p>The variables <em>GEAR_ICD</em> and <em>MESH_ICD</em> only have one unique value each - this is because they are associated with the type of net being used; so I will remove them from the dataset</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>cephs <span class="ot">&lt;-</span> cephs <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="sc">!</span><span class="fu">c</span>(GEAR_ICD, MESH_ICD))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Based on the <code>str()</code> call above, it looks like all of the variables are the correct type. However, some could be changed to factors. I’ll do that for the following variables: VESSEL, CRUISE_NO, GEAR_LOC, and SEASON. Additionally, I think month and year could be treated as numeric or categorical, so I’ll make a factor version of those variables, but retain the numeric version as well.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>cephs <span class="ot">&lt;-</span> cephs <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">VESSEL =</span> <span class="fu">as.factor</span>(VESSEL),</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>                         <span class="at">CRUISE_NO =</span> <span class="fu">factor</span>(CRUISE_NO, </span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>                                            <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"072"</span>, <span class="st">"091"</span>, <span class="st">"094"</span>, <span class="st">"104"</span>, <span class="st">"111"</span>, <span class="st">"113"</span>, <span class="st">"298"</span>, <span class="st">"121"</span>, <span class="st">"123"</span>, <span class="st">"303"</span>, <span class="st">"135"</span>, <span class="st">"166"</span>)),</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>                         <span class="at">GEAR_LOC =</span> <span class="fu">as.factor</span>(GEAR_LOC),</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>                         <span class="at">SEASON =</span> <span class="fu">factor</span>(SEASON, </span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>                                         <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">'WINTER'</span>, <span class="st">'SPRING'</span>, <span class="st">'EARLY FALL'</span>),</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>                                         <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">'Winter'</span>, <span class="st">'Spring'</span>, <span class="st">'Late Summer/Early Fall'</span>)),</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>                         <span class="at">fYEAR =</span> <span class="fu">factor</span>(YEAR),</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>                         <span class="at">fMONTH =</span> <span class="fu">factor</span>(MONTH)</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>                         )</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Check if it looks right</span></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>cephs</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1,694 × 28
+   VESSEL CRUISE_NO P_STA_NO SEAMAP SAMPLE_NO CEPH_COUNT GEAR_LOC S_LAT S_LON
+   &lt;fct&gt;  &lt;fct&gt;     &lt;chr&gt;    &lt;chr&gt;  &lt;chr&gt;          &lt;dbl&gt; &lt;fct&gt;    &lt;dbl&gt; &lt;dbl&gt;
+ 1 63     072       00003    B165   33539              0 0         29.2 -86.0
+ 2 63     072       00003    B165   33540              0 1         29.2 -86.0
+ 3 63     072       00003    B165   33541              0 2         29.2 -86.0
+ 4 63     072       00003    B165   33542              0 3         29.2 -86.0
+ 5 63     072       00003    B165   33543              0 4         29.2 -86.0
+ 6 63     072       00003    B165   33544              0 5         29.2 -86.0
+ 7 63     072       00003    B165   33545              0 6         29.2 -86.0
+ 8 63     072       00004    B159   33549              1 0         29.0 -85.5
+ 9 63     072       00004    B159   33550              0 1         29.0 -85.5
+10 63     072       00004    B159   33551              0 2         29.0 -85.5
+# ℹ 1,684 more rows
+# ℹ 19 more variables: GEAR_IN &lt;dttm&gt;, GEAR_OUT &lt;dttm&gt;, TOWTIME &lt;dbl&gt;,
+#   MONTH &lt;dbl&gt;, YEAR &lt;dbl&gt;, SEASON &lt;fct&gt;, VOL_FILT &lt;dbl&gt;, DEPTH_IBEG &lt;dbl&gt;,
+#   DEPTH_IEND &lt;dbl&gt;, DEPTH_IMAX &lt;dbl&gt;, DEPTH_SSTA &lt;dbl&gt;, TEMP_SSURF &lt;dbl&gt;,
+#   TEMP_SAIR &lt;dbl&gt;, B_PRSSR &lt;dbl&gt;, ITS_CODE &lt;chr&gt;, V_C_P &lt;chr&gt;, V_C_P_S &lt;chr&gt;,
+#   fYEAR &lt;fct&gt;, fMONTH &lt;fct&gt;</code></pre>
+</div>
+</div>
+<p>This is still a lot of variables, but not all of them would be expected to have an effect on the others. For example, which vessel was used to conduct the survey should not have an effect on any of the other variables. Other variables provide much of the same information, such as <em>V_C_P</em>, <em>V_C_P_S</em>, and <em>SEAMAP</em>. I will likely choose a subset of the variables for the user to explore in the Shiny app.</p>
+<p>Save this version of the data set for use in the Shiny app:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">write_csv</span>(cephs, <span class="st">'data/cephs.csv'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Make a list of numeric variables:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>numVar <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">'CEPH_COUNT'</span>, <span class="st">'S_LAT'</span>, <span class="st">'S_LON'</span>, <span class="st">'TOWTIME'</span>, <span class="st">'MONTH'</span>, <span class="st">'YEAR'</span>, <span class="st">'VOL_FILT'</span>, <span class="st">'DEPTH_IBEG'</span>, <span class="st">'DEPTH_IEND'</span>, <span class="st">'DEPTH_IMAX'</span>, <span class="st">'DEPTH_SSTA'</span>, <span class="st">'TEMP_SSURF'</span>, <span class="st">'B_PRSSR'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Make a list of categorical variables:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>catVar <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">'VESSEL'</span>, <span class="st">'CRUISE_NO'</span>, <span class="st">'P_STA_NO'</span>, <span class="st">'SEAMAP'</span>, <span class="st">'SAMPLE_NO'</span>, <span class="st">'GEAR_LOC'</span>, <span class="st">'SEASON'</span>, <span class="st">'ITS_CODE'</span>, <span class="st">'V_C_P'</span>, <span class="st">'V_C_P_S'</span>, <span class="st">'fYEAR'</span>, <span class="st">'fMONTH'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Make a list of time variables:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>timeVar <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">'GEAR_IN'</span>, <span class="st">'GEAR_OUT'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<ul>
+<li>Of all these variables, I will focus on the following:
+<ul>
+<li>Numeric: cephalopod count, latitude, longitude, volume filtered, depth beginning, depth end, station depth, and sea surface temperature</li>
+<li>Categorical: cruise number, gear location, season, year, month</li>
+<li>Time: gear in, gear out</li>
+</ul></li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Selected numeric variables</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>selNumVar <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">'CEPH_COUNT'</span>, <span class="st">'S_LAT'</span>, <span class="st">'S_LON'</span>, <span class="st">'VOL_FILT'</span>, <span class="st">'DEPTH_IBEG'</span>, <span class="st">'DEPTH_IEND'</span>, <span class="st">'DEPTH_SSTA'</span>, <span class="st">'TEMP_SSURF'</span>)</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Selected categorical variables</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>selCatVar <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">'CRUISE_NO'</span>, <span class="st">'GEAR_LOC'</span>, <span class="st">'SEASON'</span>, <span class="st">'fYEAR'</span>, <span class="st">'fMONTH'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<section id="contingency-tables" class="level3">
+<h3 class="anchored" data-anchor-id="contingency-tables">Contingency Tables</h3>
+<section id="one-way" class="level4">
+<h4 class="anchored" data-anchor-id="one-way">One-Way</h4>
+<p>Create one-way contingency tables for the selected categorical variables</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Cruise number</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>cephs <span class="sc">|&gt;</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(CRUISE_NO) <span class="sc">|&gt;</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">count =</span> <span class="fu">n</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 12 × 2
+   CRUISE_NO count
+   &lt;fct&gt;     &lt;int&gt;
+ 1 072         166
+ 2 091         291
+ 3 094          70
+ 4 104         185
+ 5 111         172
+ 6 113          72
+ 7 298         111
+ 8 121         253
+ 9 123          72
+10 303          77
+11 135         110
+12 166         115</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Gear location</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>cephs <span class="sc">|&gt;</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(GEAR_LOC) <span class="sc">|&gt;</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">count =</span> <span class="fu">n</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 9 × 2
+  GEAR_LOC count
+  &lt;fct&gt;    &lt;int&gt;
+1 0          255
+2 1          268
+3 2          267
+4 3          268
+5 4          259
+6 5          231
+7 6          132
+8 7           10
+9 8            4</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Season</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>cephs <span class="sc">|&gt;</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(SEASON) <span class="sc">|&gt;</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">count =</span> <span class="fu">n</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 2
+  SEASON                 count
+  &lt;fct&gt;                  &lt;int&gt;
+1 Winter                   568
+2 Spring                   502
+3 Late Summer/Early Fall   624</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Year</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>cephs <span class="sc">|&gt;</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(fYEAR) <span class="sc">|&gt;</span></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">count =</span> <span class="fu">n</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 7 × 2
+  fYEAR count
+  &lt;fct&gt; &lt;int&gt;
+1 2007    166
+2 2009    361
+3 2010    185
+4 2011    244
+5 2012    436
+6 2013    187
+7 2016    115</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Month</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>cephs <span class="sc">|&gt;</span></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(fMONTH) <span class="sc">|&gt;</span></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">count =</span> <span class="fu">n</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 7 × 2
+  fMONTH count
+  &lt;fct&gt;  &lt;int&gt;
+1 1         20
+2 2        189
+3 3        365
+4 4        240
+5 5        256
+6 8         89
+7 9        535</code></pre>
+</div>
+</div>
+</section>
+<section id="two-way" class="level4">
+<h4 class="anchored" data-anchor-id="two-way">Two-Way</h4>
+<p>Create two-way contingency tables for interesting combinations of categorical variables (not all combinations):</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Cruise number and gear location</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>cephs <span class="sc">|&gt;</span></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(CRUISE_NO, GEAR_LOC) <span class="sc">|&gt;</span></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">count =</span> <span class="fu">n</span>()) <span class="sc">|&gt;</span></span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> GEAR_LOC, <span class="at">values_from =</span> count)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`summarise()` has regrouped the output.
+ℹ Summaries were computed grouped by CRUISE_NO and GEAR_LOC.
+ℹ Output is grouped by CRUISE_NO.
+ℹ Use `summarise(.groups = "drop_last")` to silence this message.
+ℹ Use `summarise(.by = c(CRUISE_NO, GEAR_LOC))` for per-operation grouping
+  (`?dplyr::dplyr_by`) instead.</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 12 × 10
+# Groups:   CRUISE_NO [12]
+   CRUISE_NO   `0`   `1`   `2`   `3`   `4`   `5`   `6`   `7`   `8`
+   &lt;fct&gt;     &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt;
+ 1 072          25    25    25    25    24    23    19    NA    NA
+ 2 091          45    45    44    45    41    38    33    NA    NA
+ 3 094           9     9     9     9     9     8     7     7     3
+ 4 104          26    26    27    27    27    26    25     1    NA
+ 5 111          23    29    29    29    29    28     5    NA    NA
+ 6 113          12    12    12    12    12     7     4     1    NA
+ 7 298          17    17    17    17    17    15    11    NA    NA
+ 8 121          43    42    42    42    42    42    NA    NA    NA
+ 9 123          11    11    11    11    11     9     8    NA    NA
+10 303           7    15    13    14    14    12     2    NA    NA
+11 135          17    17    17    17    16    13    11     1     1
+12 166          20    20    21    20    17    10     7    NA    NA</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Season and gear location</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>cephs <span class="sc">|&gt;</span></span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(SEASON, GEAR_LOC) <span class="sc">|&gt;</span></span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">count =</span> <span class="fu">n</span>()) <span class="sc">|&gt;</span></span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> GEAR_LOC, <span class="at">values_from =</span> count)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`summarise()` has regrouped the output.
+ℹ Summaries were computed grouped by SEASON and GEAR_LOC.
+ℹ Output is grouped by SEASON.
+ℹ Use `summarise(.groups = "drop_last")` to silence this message.
+ℹ Use `summarise(.by = c(SEASON, GEAR_LOC))` for per-operation grouping
+  (`?dplyr::dplyr_by`) instead.</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 10
+# Groups:   SEASON [3]
+  SEASON                   `0`   `1`   `2`   `3`   `4`   `5`   `6`   `7`   `8`
+  &lt;fct&gt;                  &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt;
+1 Winter                    87    87    86    87    82    76    63    NA    NA
+2 Spring                    73    86    84    85    85    82     7    NA    NA
+3 Late Summer/Early Fall    95    95    97    96    92    73    62    10     4</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Season and year</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>cephs <span class="sc">|&gt;</span></span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(SEASON, fYEAR) <span class="sc">|&gt;</span></span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">count =</span> <span class="fu">n</span>()) <span class="sc">|&gt;</span></span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> fYEAR, <span class="at">values_from =</span> count)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`summarise()` has regrouped the output.
+ℹ Summaries were computed grouped by SEASON and fYEAR.
+ℹ Output is grouped by SEASON.
+ℹ Use `summarise(.groups = "drop_last")` to silence this message.
+ℹ Use `summarise(.by = c(SEASON, fYEAR))` for per-operation grouping
+  (`?dplyr::dplyr_by`) instead.</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 8
+# Groups:   SEASON [3]
+  SEASON                 `2007` `2009` `2012` `2011` `2013` `2010` `2016`
+  &lt;fct&gt;                   &lt;int&gt;  &lt;int&gt;  &lt;int&gt;  &lt;int&gt;  &lt;int&gt;  &lt;int&gt;  &lt;int&gt;
+1 Winter                    166    291    111     NA     NA     NA     NA
+2 Spring                     NA     NA    253    172     77     NA     NA
+3 Late Summer/Early Fall     NA     70     72     72    110    185    115</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="numeric-summaries" class="level3">
+<h3 class="anchored" data-anchor-id="numeric-summaries">Numeric Summaries</h3>
+<p>Create numeric summaries (means, medians, standard deviations, interquartile range) for quantitative variables at the levels of categorical variables:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>cephs <span class="sc">|&gt;</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(CRUISE_NO) <span class="sc">|&gt;</span></span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="fu">across</span>(<span class="fu">all_of</span>(selNumVar), </span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>                   <span class="fu">list</span>(<span class="st">'mean'</span> <span class="ot">=</span> <span class="er">~</span> <span class="fu">signif</span>(<span class="fu">mean</span>(.x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="at">digits =</span> <span class="dv">3</span>), </span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>                        <span class="st">'median'</span> <span class="ot">=</span> <span class="er">~</span> <span class="fu">signif</span>(<span class="fu">median</span>(.x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="at">digits =</span> <span class="dv">3</span>),</span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a>                        <span class="st">'sd'</span> <span class="ot">=</span> <span class="er">~</span> <span class="fu">signif</span>(<span class="fu">sd</span>(.x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="at">digits =</span> <span class="dv">3</span>),</span>
+<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a>                        <span class="st">'IQR'</span> <span class="ot">=</span> <span class="er">~</span> <span class="fu">signif</span>(<span class="fu">IQR</span>(.x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="at">digits =</span> <span class="dv">3</span>)), </span>
+<span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a>                   <span class="at">.names =</span> <span class="st">"{.fn}_{.col}"</span>),</span>
+<span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a>            <span class="at">count =</span> <span class="fu">n</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 12 × 34
+   CRUISE_NO mean_CEPH_COUNT median_CEPH_COUNT sd_CEPH_COUNT IQR_CEPH_COUNT
+   &lt;fct&gt;               &lt;dbl&gt;             &lt;dbl&gt;         &lt;dbl&gt;          &lt;dbl&gt;
+ 1 072                 1.57                0            5.06           0   
+ 2 091                 2.92                2            3.73           4   
+ 3 094                 1.93                0.5          3.49           3   
+ 4 104                 7.19                3           11.6           10   
+ 5 111                 0                   0            0              0   
+ 6 113                 4.71                2            7.13           5.25
+ 7 298                 1.88                1            2.24           3   
+ 8 121                 0.846               0            3.32           0   
+ 9 123                 0                   0            0              0   
+10 303                 3.45                2            4.3            4   
+11 135                 0                   0            0              0   
+12 166                 6.65                2           11.9            7   
+# ℹ 29 more variables: mean_S_LAT &lt;dbl&gt;, median_S_LAT &lt;dbl&gt;, sd_S_LAT &lt;dbl&gt;,
+#   IQR_S_LAT &lt;dbl&gt;, mean_S_LON &lt;dbl&gt;, median_S_LON &lt;dbl&gt;, sd_S_LON &lt;dbl&gt;,
+#   IQR_S_LON &lt;dbl&gt;, mean_VOL_FILT &lt;dbl&gt;, median_VOL_FILT &lt;dbl&gt;,
+#   sd_VOL_FILT &lt;dbl&gt;, IQR_VOL_FILT &lt;dbl&gt;, mean_DEPTH_IBEG &lt;dbl&gt;,
+#   median_DEPTH_IBEG &lt;dbl&gt;, sd_DEPTH_IBEG &lt;dbl&gt;, IQR_DEPTH_IBEG &lt;dbl&gt;,
+#   mean_DEPTH_IEND &lt;dbl&gt;, median_DEPTH_IEND &lt;dbl&gt;, sd_DEPTH_IEND &lt;dbl&gt;,
+#   IQR_DEPTH_IEND &lt;dbl&gt;, mean_DEPTH_SSTA &lt;dbl&gt;, median_DEPTH_SSTA &lt;dbl&gt;, …</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>cephs <span class="sc">|&gt;</span></span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(GEAR_LOC) <span class="sc">|&gt;</span></span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="fu">across</span>(<span class="fu">all_of</span>(selNumVar), </span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>                   <span class="fu">list</span>(<span class="st">'mean'</span> <span class="ot">=</span> <span class="er">~</span> <span class="fu">signif</span>(<span class="fu">mean</span>(.x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="at">digits =</span> <span class="dv">3</span>), </span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>                        <span class="st">'median'</span> <span class="ot">=</span> <span class="er">~</span> <span class="fu">signif</span>(<span class="fu">median</span>(.x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="at">digits =</span> <span class="dv">3</span>),</span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a>                        <span class="st">'sd'</span> <span class="ot">=</span> <span class="er">~</span> <span class="fu">signif</span>(<span class="fu">sd</span>(.x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="at">digits =</span> <span class="dv">3</span>),</span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a>                        <span class="st">'IQR'</span> <span class="ot">=</span> <span class="er">~</span> <span class="fu">signif</span>(<span class="fu">IQR</span>(.x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="at">digits =</span> <span class="dv">3</span>)), </span>
+<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a>                   <span class="at">.names =</span> <span class="st">"{.fn}_{.col}"</span>),</span>
+<span id="cb40-9"><a href="#cb40-9" aria-hidden="true" tabindex="-1"></a>            <span class="at">count =</span> <span class="fu">n</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 9 × 34
+  GEAR_LOC mean_CEPH_COUNT median_CEPH_COUNT sd_CEPH_COUNT IQR_CEPH_COUNT
+  &lt;fct&gt;              &lt;dbl&gt;             &lt;dbl&gt;         &lt;dbl&gt;          &lt;dbl&gt;
+1 0                   2.23                 0          5.32           1   
+2 1                   2.55                 0          7.89           2   
+3 2                   1.88                 0          3.95           2   
+4 3                   2.04                 0          4.47           3   
+5 4                   2.69                 0          5.25           3.5 
+6 5                   4.1                  0          9.64           4   
+7 6                   3.13                 0          6.2            3   
+8 7                   1.2                  0          2.82           0.75
+9 8                   0.25                 0          0.5            0.25
+# ℹ 29 more variables: mean_S_LAT &lt;dbl&gt;, median_S_LAT &lt;dbl&gt;, sd_S_LAT &lt;dbl&gt;,
+#   IQR_S_LAT &lt;dbl&gt;, mean_S_LON &lt;dbl&gt;, median_S_LON &lt;dbl&gt;, sd_S_LON &lt;dbl&gt;,
+#   IQR_S_LON &lt;dbl&gt;, mean_VOL_FILT &lt;dbl&gt;, median_VOL_FILT &lt;dbl&gt;,
+#   sd_VOL_FILT &lt;dbl&gt;, IQR_VOL_FILT &lt;dbl&gt;, mean_DEPTH_IBEG &lt;dbl&gt;,
+#   median_DEPTH_IBEG &lt;dbl&gt;, sd_DEPTH_IBEG &lt;dbl&gt;, IQR_DEPTH_IBEG &lt;dbl&gt;,
+#   mean_DEPTH_IEND &lt;dbl&gt;, median_DEPTH_IEND &lt;dbl&gt;, sd_DEPTH_IEND &lt;dbl&gt;,
+#   IQR_DEPTH_IEND &lt;dbl&gt;, mean_DEPTH_SSTA &lt;dbl&gt;, median_DEPTH_SSTA &lt;dbl&gt;, …</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>cephs <span class="sc">|&gt;</span></span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(SEASON) <span class="sc">|&gt;</span></span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="fu">across</span>(<span class="fu">all_of</span>(selNumVar), </span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>                   <span class="fu">list</span>(<span class="st">'mean'</span> <span class="ot">=</span> <span class="er">~</span> <span class="fu">signif</span>(<span class="fu">mean</span>(.x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="at">digits =</span> <span class="dv">3</span>), </span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a>                        <span class="st">'median'</span> <span class="ot">=</span> <span class="er">~</span> <span class="fu">signif</span>(<span class="fu">median</span>(.x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="at">digits =</span> <span class="dv">3</span>),</span>
+<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a>                        <span class="st">'sd'</span> <span class="ot">=</span> <span class="er">~</span> <span class="fu">signif</span>(<span class="fu">sd</span>(.x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="at">digits =</span> <span class="dv">3</span>),</span>
+<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a>                        <span class="st">'IQR'</span> <span class="ot">=</span> <span class="er">~</span> <span class="fu">signif</span>(<span class="fu">IQR</span>(.x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="at">digits =</span> <span class="dv">3</span>)), </span>
+<span id="cb42-8"><a href="#cb42-8" aria-hidden="true" tabindex="-1"></a>                   <span class="at">.names =</span> <span class="st">"{.fn}_{.col}"</span>),</span>
+<span id="cb42-9"><a href="#cb42-9" aria-hidden="true" tabindex="-1"></a>            <span class="at">count =</span> <span class="fu">n</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 34
+  SEASON          mean_CEPH_COUNT median_CEPH_COUNT sd_CEPH_COUNT IQR_CEPH_COUNT
+  &lt;fct&gt;                     &lt;dbl&gt;             &lt;dbl&gt;         &lt;dbl&gt;          &lt;dbl&gt;
+1 Winter                    2.32                  0          3.99              3
+2 Spring                    0.956                 0          3.1               0
+3 Late Summer/Ea…           4.12                  0          9.05              4
+# ℹ 29 more variables: mean_S_LAT &lt;dbl&gt;, median_S_LAT &lt;dbl&gt;, sd_S_LAT &lt;dbl&gt;,
+#   IQR_S_LAT &lt;dbl&gt;, mean_S_LON &lt;dbl&gt;, median_S_LON &lt;dbl&gt;, sd_S_LON &lt;dbl&gt;,
+#   IQR_S_LON &lt;dbl&gt;, mean_VOL_FILT &lt;dbl&gt;, median_VOL_FILT &lt;dbl&gt;,
+#   sd_VOL_FILT &lt;dbl&gt;, IQR_VOL_FILT &lt;dbl&gt;, mean_DEPTH_IBEG &lt;dbl&gt;,
+#   median_DEPTH_IBEG &lt;dbl&gt;, sd_DEPTH_IBEG &lt;dbl&gt;, IQR_DEPTH_IBEG &lt;dbl&gt;,
+#   mean_DEPTH_IEND &lt;dbl&gt;, median_DEPTH_IEND &lt;dbl&gt;, sd_DEPTH_IEND &lt;dbl&gt;,
+#   IQR_DEPTH_IEND &lt;dbl&gt;, mean_DEPTH_SSTA &lt;dbl&gt;, median_DEPTH_SSTA &lt;dbl&gt;, …</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>cephs <span class="sc">|&gt;</span></span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(fYEAR) <span class="sc">|&gt;</span></span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="fu">across</span>(<span class="fu">all_of</span>(selNumVar), </span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>                   <span class="fu">list</span>(<span class="st">'mean'</span> <span class="ot">=</span> <span class="er">~</span> <span class="fu">signif</span>(<span class="fu">mean</span>(.x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="at">digits =</span> <span class="dv">3</span>), </span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a>                        <span class="st">'median'</span> <span class="ot">=</span> <span class="er">~</span> <span class="fu">signif</span>(<span class="fu">median</span>(.x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="at">digits =</span> <span class="dv">3</span>),</span>
+<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a>                        <span class="st">'sd'</span> <span class="ot">=</span> <span class="er">~</span> <span class="fu">signif</span>(<span class="fu">sd</span>(.x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="at">digits =</span> <span class="dv">3</span>),</span>
+<span id="cb44-7"><a href="#cb44-7" aria-hidden="true" tabindex="-1"></a>                        <span class="st">'IQR'</span> <span class="ot">=</span> <span class="er">~</span> <span class="fu">signif</span>(<span class="fu">IQR</span>(.x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="at">digits =</span> <span class="dv">3</span>)), </span>
+<span id="cb44-8"><a href="#cb44-8" aria-hidden="true" tabindex="-1"></a>                   <span class="at">.names =</span> <span class="st">"{.fn}_{.col}"</span>),</span>
+<span id="cb44-9"><a href="#cb44-9" aria-hidden="true" tabindex="-1"></a>            <span class="at">count =</span> <span class="fu">n</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 7 × 34
+  fYEAR mean_CEPH_COUNT median_CEPH_COUNT sd_CEPH_COUNT IQR_CEPH_COUNT
+  &lt;fct&gt;           &lt;dbl&gt;             &lt;dbl&gt;         &lt;dbl&gt;          &lt;dbl&gt;
+1 2007             1.57                 0          5.06              0
+2 2009             2.73                 2          3.7               4
+3 2010             7.19                 3         11.6              10
+4 2011             1.39                 0          4.41              0
+5 2012             0.97                 0          2.83              0
+6 2013             1.42                 0          3.24              1
+7 2016             6.65                 2         11.9               7
+# ℹ 29 more variables: mean_S_LAT &lt;dbl&gt;, median_S_LAT &lt;dbl&gt;, sd_S_LAT &lt;dbl&gt;,
+#   IQR_S_LAT &lt;dbl&gt;, mean_S_LON &lt;dbl&gt;, median_S_LON &lt;dbl&gt;, sd_S_LON &lt;dbl&gt;,
+#   IQR_S_LON &lt;dbl&gt;, mean_VOL_FILT &lt;dbl&gt;, median_VOL_FILT &lt;dbl&gt;,
+#   sd_VOL_FILT &lt;dbl&gt;, IQR_VOL_FILT &lt;dbl&gt;, mean_DEPTH_IBEG &lt;dbl&gt;,
+#   median_DEPTH_IBEG &lt;dbl&gt;, sd_DEPTH_IBEG &lt;dbl&gt;, IQR_DEPTH_IBEG &lt;dbl&gt;,
+#   mean_DEPTH_IEND &lt;dbl&gt;, median_DEPTH_IEND &lt;dbl&gt;, sd_DEPTH_IEND &lt;dbl&gt;,
+#   IQR_DEPTH_IEND &lt;dbl&gt;, mean_DEPTH_SSTA &lt;dbl&gt;, median_DEPTH_SSTA &lt;dbl&gt;, …</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>cephs <span class="sc">|&gt;</span></span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(fMONTH) <span class="sc">|&gt;</span></span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="fu">across</span>(<span class="fu">all_of</span>(selNumVar), </span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>                   <span class="fu">list</span>(<span class="st">'mean'</span> <span class="ot">=</span> <span class="er">~</span> <span class="fu">signif</span>(<span class="fu">mean</span>(.x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="at">digits =</span> <span class="dv">3</span>), </span>
+<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a>                        <span class="st">'median'</span> <span class="ot">=</span> <span class="er">~</span> <span class="fu">signif</span>(<span class="fu">median</span>(.x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="at">digits =</span> <span class="dv">3</span>),</span>
+<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a>                        <span class="st">'sd'</span> <span class="ot">=</span> <span class="er">~</span> <span class="fu">signif</span>(<span class="fu">sd</span>(.x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="at">digits =</span> <span class="dv">3</span>),</span>
+<span id="cb46-7"><a href="#cb46-7" aria-hidden="true" tabindex="-1"></a>                        <span class="st">'IQR'</span> <span class="ot">=</span> <span class="er">~</span> <span class="fu">signif</span>(<span class="fu">IQR</span>(.x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="at">digits =</span> <span class="dv">3</span>)), </span>
+<span id="cb46-8"><a href="#cb46-8" aria-hidden="true" tabindex="-1"></a>                   <span class="at">.names =</span> <span class="st">"{.fn}_{.col}"</span>),</span>
+<span id="cb46-9"><a href="#cb46-9" aria-hidden="true" tabindex="-1"></a>            <span class="at">count =</span> <span class="fu">n</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 7 × 34
+  fMONTH mean_CEPH_COUNT median_CEPH_COUNT sd_CEPH_COUNT IQR_CEPH_COUNT
+  &lt;fct&gt;            &lt;dbl&gt;             &lt;dbl&gt;         &lt;dbl&gt;          &lt;dbl&gt;
+1 1                 1                    1          1.08              2
+2 2                 2.98                 2          3.84              4
+3 3                 2.02                 0          4.1               3
+4 4                 0                    0          0                 0
+5 5                 1.88                 0          4.15              2
+6 8                 1.42                 0          3.46              2
+7 9                 4.57                 1          9.6               5
+# ℹ 29 more variables: mean_S_LAT &lt;dbl&gt;, median_S_LAT &lt;dbl&gt;, sd_S_LAT &lt;dbl&gt;,
+#   IQR_S_LAT &lt;dbl&gt;, mean_S_LON &lt;dbl&gt;, median_S_LON &lt;dbl&gt;, sd_S_LON &lt;dbl&gt;,
+#   IQR_S_LON &lt;dbl&gt;, mean_VOL_FILT &lt;dbl&gt;, median_VOL_FILT &lt;dbl&gt;,
+#   sd_VOL_FILT &lt;dbl&gt;, IQR_VOL_FILT &lt;dbl&gt;, mean_DEPTH_IBEG &lt;dbl&gt;,
+#   median_DEPTH_IBEG &lt;dbl&gt;, sd_DEPTH_IBEG &lt;dbl&gt;, IQR_DEPTH_IBEG &lt;dbl&gt;,
+#   mean_DEPTH_IEND &lt;dbl&gt;, median_DEPTH_IEND &lt;dbl&gt;, sd_DEPTH_IEND &lt;dbl&gt;,
+#   IQR_DEPTH_IEND &lt;dbl&gt;, mean_DEPTH_SSTA &lt;dbl&gt;, median_DEPTH_SSTA &lt;dbl&gt;, …</code></pre>
+</div>
+</div>
+</section>
+<section id="plots" class="level3">
+<h3 class="anchored" data-anchor-id="plots">Plots</h3>
+<section id="univariate-plots" class="level4">
+<h4 class="anchored" data-anchor-id="univariate-plots">Univariate Plots</h4>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Histogram</span></span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> cephs, <span class="fu">aes</span>(CEPH_COUNT<span class="sc">/</span>VOL_FILT<span class="sc">*</span><span class="dv">1000</span>)) <span class="sc">+</span></span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>() <span class="sc">+</span></span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">'Abundance &lt;br&gt;(cephalopods 1000 m&lt;sup&gt;-3&lt;/sup&gt;)'</span>,</span>
+<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">'Frequency'</span>) <span class="sc">+</span></span>
+<span id="cb48-6"><a href="#cb48-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>() <span class="sc">+</span> </span>
+<span id="cb48-7"><a href="#cb48-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.title.x =</span> <span class="fu">element_markdown</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`stat_bin()` using `bins = 30`. Pick better value `binwidth`.</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 1 row containing non-finite outside the scale range
+(`stat_bin()`).</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Riley_Project2_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Density Estimates</span></span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> cephs, <span class="fu">aes</span>(CEPH_COUNT<span class="sc">/</span>VOL_FILT<span class="sc">*</span><span class="dv">1000</span>)) <span class="sc">+</span></span>
+<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>() <span class="sc">+</span></span>
+<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">'Abundance &lt;br&gt;(cephalopods 1000 m&lt;sup&gt;-3&lt;/sup&gt;)'</span>,</span>
+<span id="cb51-5"><a href="#cb51-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">'Density'</span>) <span class="sc">+</span></span>
+<span id="cb51-6"><a href="#cb51-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>() <span class="sc">+</span> </span>
+<span id="cb51-7"><a href="#cb51-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.title.x =</span> <span class="fu">element_markdown</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 1 row containing non-finite outside the scale range
+(`stat_density()`).</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Riley_Project2_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Bar chart</span></span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> cephs, <span class="fu">aes</span>(CRUISE_NO)) <span class="sc">+</span></span>
+<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>() <span class="sc">+</span></span>
+<span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">'Cruise Number'</span>,</span>
+<span id="cb53-5"><a href="#cb53-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">'Number of Samples Collected'</span>) <span class="sc">+</span></span>
+<span id="cb53-6"><a href="#cb53-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Riley_Project2_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="multivariate-plots" class="level4">
+<h4 class="anchored" data-anchor-id="multivariate-plots">Multivariate Plots</h4>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Stacked bar chart</span></span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> cephs, <span class="fu">aes</span>(<span class="at">x =</span> fYEAR, <span class="at">fill =</span> SEASON)) <span class="sc">+</span></span>
+<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">position =</span> <span class="st">'stack'</span>) <span class="sc">+</span></span>
+<span id="cb54-4"><a href="#cb54-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">'Year'</span>,</span>
+<span id="cb54-5"><a href="#cb54-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span><span class="st">'Number of Samples Collected'</span>,</span>
+<span id="cb54-6"><a href="#cb54-6" aria-hidden="true" tabindex="-1"></a>       <span class="at">fill =</span> <span class="st">'Season'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Riley_Project2_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Side-by-side bar chart</span></span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> cephs, <span class="fu">aes</span>(<span class="at">x =</span> GEAR_LOC, <span class="at">fill =</span> SEASON)) <span class="sc">+</span></span>
+<span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">position =</span> <span class="st">'dodge'</span>) <span class="sc">+</span></span>
+<span id="cb55-4"><a href="#cb55-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">'Gear location'</span>,</span>
+<span id="cb55-5"><a href="#cb55-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span><span class="st">'Number of Samples Collected'</span>,</span>
+<span id="cb55-6"><a href="#cb55-6" aria-hidden="true" tabindex="-1"></a>       <span class="at">fill =</span> <span class="st">'Season'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Riley_Project2_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Box plot</span></span>
+<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> cephs, <span class="fu">aes</span>(<span class="at">x =</span> SEASON, </span>
+<span id="cb56-3"><a href="#cb56-3" aria-hidden="true" tabindex="-1"></a>                         <span class="at">y =</span> TEMP_SSURF, </span>
+<span id="cb56-4"><a href="#cb56-4" aria-hidden="true" tabindex="-1"></a>                         <span class="at">fill =</span> SEASON)) <span class="sc">+</span></span>
+<span id="cb56-5"><a href="#cb56-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>() <span class="sc">+</span></span>
+<span id="cb56-6"><a href="#cb56-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">'Season'</span>,</span>
+<span id="cb56-7"><a href="#cb56-7" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">'Sea Surface Temperature (degrees Celsius)'</span>) <span class="sc">+</span></span>
+<span id="cb56-8"><a href="#cb56-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>() <span class="sc">+</span></span>
+<span id="cb56-9"><a href="#cb56-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">'none'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Riley_Project2_files/figure-html/unnamed-chunk-22-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Faceted violin plot with square-root transformed y data</span></span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> cephs, <span class="fu">aes</span>(<span class="at">x =</span> SEASON,</span>
+<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a>                         <span class="at">y =</span> <span class="fu">sqrt</span>(CEPH_COUNT<span class="sc">/</span>VOL_FILT<span class="sc">*</span><span class="dv">1000</span>),</span>
+<span id="cb57-4"><a href="#cb57-4" aria-hidden="true" tabindex="-1"></a>                         <span class="at">fill =</span> SEASON)) <span class="sc">+</span></span>
+<span id="cb57-5"><a href="#cb57-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_violin</span>() <span class="sc">+</span></span>
+<span id="cb57-6"><a href="#cb57-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(cephs<span class="sc">$</span> fYEAR) <span class="sc">+</span></span>
+<span id="cb57-7"><a href="#cb57-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">'Square Root Transformed Abundance &lt;br&gt;(cephalopods 1000 m&lt;sup&gt;-3&lt;/sup&gt;)'</span>,</span>
+<span id="cb57-8"><a href="#cb57-8" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="cn">NULL</span>,</span>
+<span id="cb57-9"><a href="#cb57-9" aria-hidden="true" tabindex="-1"></a>       <span class="at">fill =</span> <span class="st">'Season'</span>) <span class="sc">+</span></span>
+<span id="cb57-10"><a href="#cb57-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb57-11"><a href="#cb57-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.title.y =</span> <span class="fu">element_markdown</span>(),</span>
+<span id="cb57-12"><a href="#cb57-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text.x =</span> <span class="fu">element_blank</span>()</span>
+<span id="cb57-13"><a href="#cb57-13" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 1 row containing non-finite outside the scale range
+(`stat_ydensity()`).</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Riley_Project2_files/figure-html/unnamed-chunk-23-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Scatterplot</span></span>
+<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> cephs, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">abs</span>(DEPTH_IBEG <span class="sc">-</span> DEPTH_IEND), </span>
+<span id="cb59-3"><a href="#cb59-3" aria-hidden="true" tabindex="-1"></a>                         <span class="at">y =</span> (CEPH_COUNT<span class="sc">/</span>VOL_FILT<span class="sc">*</span><span class="dv">1000</span>))) <span class="sc">+</span></span>
+<span id="cb59-4"><a href="#cb59-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb59-5"><a href="#cb59-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">'Approximate depth of sampling (m)'</span>,</span>
+<span id="cb59-6"><a href="#cb59-6" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">'Abundance &lt;br&gt;(cephalopods 1000 m&lt;sup&gt;-3&lt;/sup&gt;)'</span>) <span class="sc">+</span> </span>
+<span id="cb59-7"><a href="#cb59-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>() <span class="sc">+</span> </span>
+<span id="cb59-8"><a href="#cb59-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb59-9"><a href="#cb59-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.title.y =</span> <span class="fu">element_markdown</span>()</span>
+<span id="cb59-10"><a href="#cb59-10" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 1 row containing missing values or values outside the scale range
+(`geom_point()`).</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Riley_Project2_files/figure-html/unnamed-chunk-24-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb61"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Scatterplot with categorical variable</span></span>
+<span id="cb61-2"><a href="#cb61-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> cephs, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">abs</span>(DEPTH_IBEG <span class="sc">-</span> DEPTH_IEND), </span>
+<span id="cb61-3"><a href="#cb61-3" aria-hidden="true" tabindex="-1"></a>                         <span class="at">y =</span> ((CEPH_COUNT<span class="sc">/</span>VOL_FILT<span class="sc">*</span><span class="dv">1000</span>)),</span>
+<span id="cb61-4"><a href="#cb61-4" aria-hidden="true" tabindex="-1"></a>                         <span class="at">color =</span> SEASON)) <span class="sc">+</span></span>
+<span id="cb61-5"><a href="#cb61-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb61-6"><a href="#cb61-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">'Approximate depth of sampling (m)'</span>,</span>
+<span id="cb61-7"><a href="#cb61-7" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">'Abundance &lt;br&gt;(cephalopods 1000 m&lt;sup&gt;-3&lt;/sup&gt;)'</span>,</span>
+<span id="cb61-8"><a href="#cb61-8" aria-hidden="true" tabindex="-1"></a>       <span class="at">color =</span> <span class="st">'Season'</span>) <span class="sc">+</span> </span>
+<span id="cb61-9"><a href="#cb61-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>() <span class="sc">+</span> </span>
+<span id="cb61-10"><a href="#cb61-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb61-11"><a href="#cb61-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.title.y =</span> <span class="fu">element_markdown</span>()</span>
+<span id="cb61-12"><a href="#cb61-12" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 1 row containing missing values or values outside the scale range
+(`geom_point()`).</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Riley_Project2_files/figure-html/unnamed-chunk-25-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb63"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Scatterplot with third numeric variable</span></span>
+<span id="cb63-2"><a href="#cb63-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> cephs, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">abs</span>(DEPTH_IBEG <span class="sc">-</span> DEPTH_IEND), </span>
+<span id="cb63-3"><a href="#cb63-3" aria-hidden="true" tabindex="-1"></a>                         <span class="at">y =</span> DEPTH_SSTA,</span>
+<span id="cb63-4"><a href="#cb63-4" aria-hidden="true" tabindex="-1"></a>                         <span class="at">size =</span> (CEPH_COUNT<span class="sc">/</span>VOL_FILT<span class="sc">*</span><span class="dv">1000</span>))) <span class="sc">+</span></span>
+<span id="cb63-5"><a href="#cb63-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb63-6"><a href="#cb63-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">'Approximate depth of sampling (m)'</span>,</span>
+<span id="cb63-7"><a href="#cb63-7" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">'Water Column Depth (m)'</span>,</span>
+<span id="cb63-8"><a href="#cb63-8" aria-hidden="true" tabindex="-1"></a>       <span class="at">size =</span> <span class="st">'Abundance &lt;br&gt;(cephalopods 1000 m&lt;sup&gt;-3&lt;/sup&gt;)'</span>) <span class="sc">+</span> </span>
+<span id="cb63-9"><a href="#cb63-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>() <span class="sc">+</span> </span>
+<span id="cb63-10"><a href="#cb63-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb63-11"><a href="#cb63-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.title =</span> <span class="fu">element_markdown</span>()</span>
+<span id="cb63-12"><a href="#cb63-12" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 1 row containing missing values or values outside the scale range
+(`geom_point()`).</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Riley_Project2_files/figure-html/unnamed-chunk-26-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Sadly had to comment out the map with points sized by value of numeric variable to get the app to deploy. Apparently it’s a known problem with terra (https://forum.posit.co/t/deployment-fails-on-shinyapps-io-because-of-terra/214331/19), but very much a bummer because this leaflet map was so cool. <!-- ```{r} --> <!-- # Map with points sized by value of numeric variable --></p>
+<!-- # Combine samples collected at the same site -->
+<!-- cephsBySite <- cephs |> -->
+<!--   group_by(V_C_P) |> -->
+<!--   summarize(cephCountsBySite = mean(CEPH_COUNT)*n(), -->
+<!--             totalVolFilt = mean(VOL_FILT)*n(), -->
+<!--             S_LAT = first(S_LAT), -->
+<!--             S_LON = first(S_LON), -->
+<!--             CRUISE_NO = first(CRUISE_NO), -->
+<!--             YEAR = first(YEAR), -->
+<!--             MONTH = first(MONTH), -->
+<!--             SEASON = first(SEASON), -->
+<!--             DEPTH = max(DEPTH_IMAX), -->
+<!--             MIN_DEPTH = min(DEPTH_IEND)) -->
+<!-- # Create map -->
+<!-- cephMap = leaflet(data = cephsBySite) %>% -->
+<!--   addTiles() %>% -->
+<!--   addCircleMarkers( -->
+<!--       ~S_LON, ~S_LAT,  -->
+<!--       radius = ~(cephCountsBySite/totalVolFilt*1000)*0.25,  -->
+<!--       color = ~ifelse(cephsBySite$cephCountsBySite>0 , "red", "orange"), -->
+<!--       stroke = TRUE,  -->
+<!--       fillOpacity = 0.2, -->
+<!--       label = ~as.character(V_C_P), -->
+<!--       popup = ~paste("Site Number:", V_C_P,  -->
+<!--                      "<br>Cephalopod Abundance:", signif((cephCountsBySite/totalVolFilt*1000), digits = 3), "cephalopods per 1000 m<sup>3</sup>",  -->
+<!--                      "<br>Cruise Number:", CRUISE_NO, -->
+<!--                      "<br>Year:", YEAR, -->
+<!--                      "<br>Month:", MONTH, -->
+<!--                      "<br>Season:", SEASON, -->
+<!--                      "<br>Depth Sampled:", DEPTH, "to", MIN_DEPTH, "m"), -->
+<!--       clusterOptions = markerClusterOptions(maxClusterRadius = 25) -->
+<!--    ) -->
+<!-- cephMap -->
+<!-- ``` -->
+</section>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
