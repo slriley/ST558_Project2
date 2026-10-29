@@ -182,8 +182,9 @@ ui <- fluidPage(
                             multiple = TRUE
                             ),
                 
+                # Don't need at the moment
                 # Check why it's not working
-                verbatimTextOutput("check"),
+                # verbatimTextOutput("check"),
                 
                 # Dynamic UI radio buttons to choose data distribution plot type
                 uiOutput("histDens"),
@@ -191,32 +192,37 @@ ui <- fluidPage(
                 # Dynamic UI radio buttons to choose bivariate barplot type
                 uiOutput("whichBar"),
                 
+                # Dynamic UI radio buttons to choose boxplot type
+                uiOutput("whichBox"),
+                
+                # Dynamic UI radio buttons to choose faceted boxplot type
+                uiOutput("whichTriBox"),
+                
                 # Action button to produce plot
                 actionButton(inputId = 'producePlot',
                              label = 'Produce graphs'),
               ),
               
+
+# Data Exploration tab displays -------------------------------------------
+              
+              # Display message about not having this display figured out
+              card(p("Please scroll down until you find the table/plot you've
+                     made. I ran out of time to figure this display out.")),
               
               # Display contingency table or summary statistics table
               card(DTOutput(outputId = "conTable")),
               card(DTOutput(outputId = "sumTable")),
               
-              # Not working
-              # uiOutput(outputId = "conTable"),
-              
-              # conditionalPanel(condition = "output.conTable == true",
-              #                  DTOutput(outputId = "conTable")),
-              # card(DTOutput(outputId = "conTable"),
-              #      DTOutput(outputId = "sumTable"),
-              #      plotOutput(outputId = 'barplot'),
-              #      plotOutput(outputId = 'dataDist'),
-              #      plotOutput(outputId = 'biBarplot')),
-              #card(DTOutput(outputId = "sumTable")),
-              
               # Display selected plot
               card(plotOutput(outputId = 'barplot')),
               card(plotOutput(outputId = 'dataDist')),
               card(plotOutput(outputId = 'biBarplot')),
+              card(plotOutput(outputId = 'scatterplot')),
+              card(plotOutput(outputId = 'boxplot')),
+              card(plotOutput(outputId = 'catScatter')),
+              card(plotOutput(outputId = 'triScatter')),
+              card(plotOutput(outputId = 'facetBox')),
               
     ),
 
@@ -224,15 +230,14 @@ ui <- fluidPage(
     # Adding spacing between nav items
     nav_spacer()
   )
-  
-
-
-
 )
+
 
 # Define server logic ----
 server <- function(input, output, session) {
-  
+
+# Widgets -----------------------------------------------------------------
+
   # Slider for first numeric variable
   output$numVar1_slider <- renderUI({
     sliderInput(inputId = "numVar1_values",
@@ -276,6 +281,9 @@ server <- function(input, output, session) {
       filter(between(get(unname(selNumVar[input$num_var2])), input$numVar2_values[1], input$numVar2_values[2]))
   })
 
+  
+# Data Download Tab -------------------------------------------------------
+
   # Create data table
   output$cephTable <- DT::renderDataTable({
     req(input$subsetData)
@@ -295,7 +303,10 @@ server <- function(input, output, session) {
       write.csv(samples_selected(), file)
       }
     )
-  
+
+
+# Data Summaries ----------------------------------------------------------
+
   # Create contingency table when the action button is clicked and categorical 
   # variables are selected
   conTblR <- reactive({
@@ -322,13 +333,6 @@ server <- function(input, output, session) {
   # Send contingency table to UI
   output$conTable <- renderDataTable({ conTblR() })
   
-  # Not doing what I want
-  # output$conTable <- renderUI({ 
-  #   output$renConTblR <- renderDataTable ({conTblR()})
-  #   dataTableOutput("renConTblR")
-  #     })
-  
-
   
   # Create summary statistics table when the action button is clicked and 
   # numeric variables are selected
@@ -350,9 +354,12 @@ server <- function(input, output, session) {
   # Send summary statistics table to UI
   output$sumTable <- renderDataTable({ sumTblR() })
   
+  # don't need at the moment
   # Check input to figure out why it's not working
-  output$check <- renderText({ input$plotVar })
+  # output$check <- renderText({ input$plotVar })
   
+
+# Univariate Plots --------------------------------------------------------
   
   # Produce barplot when action button is clicked and one categorical variable 
   # is selected
@@ -372,6 +379,7 @@ server <- function(input, output, session) {
       }
     } 
   })
+  
   
   # Produce radio buttons to select histogram or density plot if one numeric 
   # variable is selected
@@ -396,39 +404,32 @@ server <- function(input, output, session) {
     req(input$plotVar)
     # Check that a plot type was selected
     req(input$univarNum)
-    # Produce plot
-    if (input$univarNum == 'Histogram') {
-      # Histogram
-      ggplot(data = samples_selected(), aes(get(unname(selNumVar[input$plotVar])))) +
-        geom_histogram() +
-        labs(x = paste(input$plotVar),
-             y = 'Frequency') +
-        theme_classic()
-    } else if (input$univarNum == 'Smoothed Density Estimate') {
-      # Density Estimates
-      ggplot(data = samples_selected(), aes(get(unname(selNumVar[input$plotVar])))) +
-        geom_density() +
-        labs(x = paste(input$plotVar),
-             y = 'Density') +
-        theme_classic()
+    # Check that only one variable has been selected
+    if (length(input$plotVar) == 1) {
+      # Produce plot
+      if (input$univarNum == 'Histogram') {
+        # Histogram
+        ggplot(data = samples_selected(), aes(get(unname(selNumVar[input$plotVar])))) +
+          geom_histogram() +
+          labs(x = paste(input$plotVar),
+               y = 'Frequency') +
+          theme_classic()
+      } else if (input$univarNum == 'Smoothed Density Estimate') {
+        # Density Estimates
+        ggplot(data = samples_selected(), aes(get(unname(selNumVar[input$plotVar])))) +
+          geom_density() +
+          labs(x = paste(input$plotVar),
+               y = 'Density') +
+          theme_classic()
+      } else {}
     }
   })
   
-  
+
+# Bivariate Plots ---------------------------------------------------------
+
   # Produce radio buttons to select stacked or side-by-side barplot if two 
   # categorical variables are selected
-  # output$whichBar <- renderUI({
-  #   req(input$plotVar)
-  #   if ((length(input$plotVar) == 2) & (input$plotVar %in% names(selCatVar))) {
-  #     radioButtons(inputId = "bivarCat",
-  #                  label = "Select which barplot to produce:",
-  #                  choices = c('Stacked', 'Side-by-Side'),
-  #                  selected = 'Stacked'
-  #     )
-  #   }
-  #   
-  # })
-  
   output$whichBar <- renderUI({
     req(input$plotVar)
     if (length(input$plotVar) == 2) {
@@ -449,6 +450,8 @@ server <- function(input, output, session) {
     req(input$producePlot)
     # Check that at least one variable has been selected to plot
     req(input$plotVar)
+    # Check that a plot type was selected
+    req(input$bivarCat)
     # Produce plot
     if (input$bivarCat == 'Stacked') {
       # Stacked bar chart
@@ -460,68 +463,240 @@ server <- function(input, output, session) {
              y ='Number of Samples Collected',
              fill = paste(input$plotVar[2])) +
         theme_classic()
-    } 
-    # else if (input$univarNum == 'Smoothed Density Estimate') {
-    #   # Density Estimates
-    #   ggplot(data = samples_selected(), aes(get(unname(selNumVar[input$plotVar])))) +
-    #     geom_density() +
-    #     labs(x = paste(input$plotVar),
-    #          y = 'Density') +
-    #     theme_classic()
-    # }
+    } else if (input$bivarCat == 'Side-by-Side') {
+      # Side-by-side bar chart
+      ggplot(data = samples_selected(), 
+             aes(x = get(unname(selCatVar[input$plotVar[1]])), 
+                 fill = as.factor(get(unname(selCatVar[input$plotVar[2]]))))) +
+        geom_bar(position = 'dodge') +
+        labs(x = paste(input$plotVar[1]),
+             y ='Number of Samples Collected',
+             fill = paste(input$plotVar[2])) +
+        theme_classic()
+    } else {}
+
   })
   
   
-  # Produce dynamic widget to select which multivariate plot to produce
+  # Produce scatterplot when action button is clicked and two numeric variables 
+  # are selected
+  output$scatterplot <- renderPlot({
+    # Check that button has been clicked
+    req(input$producePlot)
+    # Check that at least one variable has been selected to plot
+    req(input$plotVar)
+    if (length(input$plotVar) == 2) {
+      if (all(input$plotVar %in% names(selNumVar))) {
+        # Scatterplot
+        ggplot(data = samples_selected(), aes(x = get(unname(selNumVar[input$plotVar[1]])), 
+                                              y = get(unname(selNumVar[input$plotVar[2]])))) +
+          geom_point() +
+          labs(x = paste(input$plotVar[1]),
+               y = paste(input$plotVar[2])) + 
+          theme_classic()
+      }
+    } 
+  })
+  
+  
+  
+  # Produce radio buttons to select boxplot or violin plot if one numeric and
+  # one categorical variable are selected
+  output$whichBox <- renderUI({
+    req(input$plotVar)
+    if (length(input$plotVar) == 2) {
+      if (all(input$plotVar %in% names(selCatVar))) {
 
-  # isMultivariate <- reactive({
-  #   if (length(input$plotVar)) > 1){
-  #   
-  # }
+      } else if (all(input$plotVar %in% names(selNumVar))) {
+        
+      } else {
+        radioButtons(inputId = "biCatNum",
+                     label = "Select which boxplot to produce:",
+                     choices = c('Boxplot', 'Violin Plot'),
+                     selected = 'Violin Plot'
+        )
+      }
+    } 
+  })
+  
+  # Produce chosen boxplot when action button is clicked
+  output$boxplot <- renderPlot({
+    # Check that button has been clicked
+    req(input$producePlot)
+    # Check that at least one variable has been selected to plot
+    req(input$plotVar)
+    # Check that a plot type was selected
+    req(input$biCatNum)
+    # Check that only two variables were selected
+    if (length(input$plotVar) == 2) {
+      # Produce plot
+      if (input$biCatNum == 'Boxplot') {
+        # Box plot
+        ggplot(data = samples_selected(), 
+               aes(x = as.factor(get(unname(selCatVar[input$plotVar[1]]))),
+                   y = get(unname(selCatVar[input$plotVar[2]])), 
+                   fill = as.factor(get(unname(selCatVar[input$plotVar[1]]))))) +
+          geom_boxplot() +
+          labs(x = paste(input$plotVar[1]),
+               y = paste(input$plotVar[2])) +
+          theme_classic() +
+          theme(legend.position = 'none')
+      } else if (input$biCatNum == 'Violin Plot') {
+        # Violin plot
+        ggplot(data = samples_selected(), 
+               aes(x = as.factor(get(unname(selCatVar[input$plotVar[1]]))),
+                   y = get(unname(selNumVar[input$plotVar[2]])), 
+                   fill = as.factor(get(unname(selCatVar[input$plotVar[1]]))))) +
+          geom_violin() +
+          labs(x = paste(input$plotVar[1]),
+               y = paste(input$plotVar[2])) +
+          theme_classic() +
+          theme(legend.position = 'none')
+      } else {}
+      
+    }
+    
+  })
+  
+
+
+# Trivariate Plots --------------------------------------------------------
+
+  # Produce scatterplot with color when action button is clicked and two numeric
+  # variables and one categorical variable are selected
+  output$catScatter <- renderPlot({
+    # Check that button has been clicked
+    req(input$producePlot)
+    # Check that at least one variable has been selected to plot
+    req(input$plotVar)
+    if (length(input$plotVar) == 3) {
+      if (sum(input$plotVar %in% names(selCatVar)) == 1 & sum(input$plotVar %in% names(selNumVar)) == 2) {
+          # Scatterplot with categorical variable
+          ggplot(data = samples_selected(), 
+                 aes(x = get(unname(selNumVar[input$plotVar[2]])),
+                     y = get(unname(selNumVar[input$plotVar[3]])),
+                     color = get(unname(selCatVar[input$plotVar[1]])))) +
+            geom_point() +
+            labs(x = paste(input$plotVar[2]),
+                 y = paste(input$plotVar[3]),
+                 color = paste(input$plotVar[1])) +
+            theme_classic()
+      }
+    } 
+  })
+  
+  
+  # Produce scatterplot when action button is clicked and three numeric 
+  # variables are selected
+  output$triScatter <- renderPlot({
+    # Check that button has been clicked
+    req(input$producePlot)
+    # Check that at least one variable has been selected to plot
+    req(input$plotVar)
+    if (length(input$plotVar) == 3) {
+      if (all(input$plotVar %in% names(selNumVar))) {
+        # Scatterplot with point size
+        ggplot(data = samples_selected(), 
+               aes(x = get(unname(selNumVar[input$plotVar[1]])),
+                   y = get(unname(selNumVar[input$plotVar[2]])),
+                   size = get(unname(selNumVar[input$plotVar[3]])))) +
+          geom_point() +
+          labs(x = paste(input$plotVar[1]),
+               y = paste(input$plotVar[2]),
+               size = paste(input$plotVar[3])) + 
+          theme_classic()
+      }
+    } 
+  })
+  
+  
+  
+  # Produce radio buttons to select boxplot or violin plot if one numeric and
+  # two categorical variables are selected
+  output$whichTriBox <- renderUI({
+    req(input$plotVar)
+    if (length(input$plotVar) == 3) {
+      if (sum(input$plotVar %in% names(selCatVar)) == 2 & sum(input$plotVar %in% names(selNumVar)) == 1) {
+        radioButtons(inputId = "triCatNum",
+                     label = "Select which faceted boxplot to produce:",
+                     choices = c('Boxplot', 'Violin Plot'),
+                     selected = 'Violin Plot'
+        )
+      }
+    } 
+  })
+  
+  # Produce faceted boxplot or violin plot when action button is clicked and one
+  # numeric variable and two categorical variables are selected
+  output$facetBox <- renderPlot({
+    # Check that button has been clicked
+    req(input$producePlot)
+    # Check that at least one variable has been selected to plot
+    req(input$plotVar)
+    # Check that a plot type was selected
+    req(input$triCatNum)
+    # Check that three variables are selected
+    if (length(input$plotVar) == 3) {
+      if (sum(input$plotVar %in% names(selCatVar)) == 2 & sum(input$plotVar %in% names(selNumVar)) == 1) {
+        # Produce plot
+        if (input$triCatNum == 'Boxplot') {
+          # Box plot
+          ggplot(data = samples_selected(), 
+                 aes(x = as.factor(get(unname(selCatVar[input$plotVar[1]]))),
+                     y = get(unname(selCatVar[input$plotVar[3]])), 
+                     fill = as.factor(get(unname(selCatVar[input$plotVar[1]]))))) +
+            geom_boxplot() +
+            facet_wrap(vars(as.factor(get(unname(selCatVar[input$plotVar[2]]))))) +
+            labs(x = NULL,
+                 y = paste(input$plotVar[3]),
+                 fill = paste(input$plotVar[1])) +
+            theme_classic() +
+            theme(
+              axis.text.x = element_blank()
+            )
+        } else if (input$triCatNum == 'Violin Plot') {
+          # Violin plot
+          ggplot(data = samples_selected(), 
+                 aes(x = as.factor(get(unname(selCatVar[input$plotVar[1]]))),
+                     y = get(unname(selNumVar[input$plotVar[3]])), 
+                     fill = as.factor(get(unname(selCatVar[input$plotVar[1]]))))) +
+            geom_violin() +
+            facet_wrap(vars(as.factor(get(unname(selCatVar[input$plotVar[2]]))))) +
+            labs(x = NULL,
+                 y = paste(input$plotVar[3]),
+                 fill = paste(input$plotVar[1])) +
+            theme_classic() +
+            theme(
+              axis.text.x = element_blank()
+            )
+        } else {}
+      }
+    } 
+  })
+  
+  
+  
+  # Never mind for now - complicated - but it's really cool in the .qmd file!
+  # Produce map when action button is clicked and two numeric variables 
+  # are selected, one of which is latitude or longitude
+  # output$map <- renderPlot({
+  #   # Check that button has been clicked
+  #   req(input$producePlot)
+  #   # Check that at least one variable has been selected to plot
+  #   req(input$plotVar)
+  #   if (length(input$plotVar) == 2) {
+  #     if (all(input$plotVar %in% names(selNumVar))) {
+  #       if ('Latitude' %in% input$plotVar | 'Longitude' %in% input$plotVar) {
+  #         
+  #       }
+  #     }
+  #   } 
   # })
   
-  # output$multivariate <- renderUI({
-  #   if (length(input$plotVar) == 2){
-  #     if (input$plotVar %in% selCatVar){
-  #       radioButtons(inputId = 'barType',
-  #                    label = 'Select type of barplot',
-  #                    choices = c('Stacked, Side-by-Side'),
-  #                    selected = 'Stacked'
-  #                    )        
-  #     } else if (input$plotVar %in% selNumVar){
-  #       radioButtons()
-  #     }
-  # 
-  #   }
-  #   tagList(
-  #     radioButtons()
-  #     sliderInput("n", "N", 1, 1000, 500),
-  #     textInput("label", "Label")
-  #   )
-  # })
-  # 
-  # # Create plot when the action button is clicked and ___
-  # conTblR <- reactive({
-  #   if (input$varType == 'Categorical') {
-  #     input$produceSum
-  #     if (length(input$conTableVar) == 1){
-  #       samples_selected() |>
-  #         group_by(get(unname(selCatVar[input$conTableVar]))) |>
-  #         summarize(count = n()) |>
-  #         #rename(get(unname(selCatVar[input$conTableVar])) = `get(unname(selCatVar[input$conTableVar))`) |>
-  #         remove_rownames()
-  #     } else if (length(input$conTableVar) == 2){
-  #       samples_selected() |>
-  #         group_by(get(unname(selCatVar[input$conTableVar[1]])), 
-  #                  get(unname(selCatVar[input$conTableVar[2]]))) |>
-  #         summarize(count = n()) |>
-  #         pivot_wider(names_from = `get(unname(selCatVar[input$conTableVar[1]]))`, 
-  #                     values_from = count) |>
-  #         remove_rownames()
-  #     }
-  #   }
-  # })
-  # 
+  
+  
+  
+  
   
 }
 
